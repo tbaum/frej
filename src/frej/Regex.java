@@ -3,7 +3,7 @@ package frej;
 
 import java.util.*;
 
-import frej.fuzzy.Fuzzy;
+import frej.fuzzy.*;
 
 
 /*
@@ -20,7 +20,22 @@ import frej.fuzzy.Fuzzy;
  * (#MIN:MAX) - should match token with number in specified range (also (#MAX) or simply (#)) 
  */
 
-
+/**
+ * Class represents fuzzy regular expression at whole.
+ * 
+ * Pattern of fuzzy regexp is passed as string to constructor.
+ * 
+ * Then any string could be checked against this regexp with the
+ * help of match, matchFromStart or presentInSequence methods.
+ * 
+ * After matching it is possible to receive replacement for matched
+ * region via getReplacement method.
+ * 
+ * Few more auxiliary methods provided for handling parts of original
+ * string and result.
+ * 
+ * @author Rodion Gorkovenko
+ */
 public class Regex {
     
     
@@ -38,6 +53,10 @@ public class Regex {
     protected String[] groups = new String['Z' - 'A' + 1];
     
     
+    /**
+     * Creates new regular expression (builds it as a tree of elements) from
+     * presented pattern. Behavior is undefined if pattern is incorrect.
+     */
     public Regex(String pattern) {
         root = parse(pattern);
     } // FuzzyRegex
@@ -127,6 +146,11 @@ public class Regex {
     } // pattern
     
     
+    /**
+     * Checks whether this regexp matches to any subsequence in presented string.
+     * @return number of token from which best match starts or (-1) if all matches
+     * are bad enough.
+     */
     public int presentInSequence(String seq) {
         double bestResult = Double.POSITIVE_INFINITY;
         int bestPos = -1;
@@ -155,6 +179,10 @@ public class Regex {
     } // presentInSequence
     
     
+    /**
+     * Check whether presented string matches with this regexp with all tokens.
+     * @return true or false depending on quality of best matching variant.
+     */
     public boolean match(String seq) {
         splitTokens(seq);
         matchResult = root.matchAt(0);
@@ -167,6 +195,10 @@ public class Regex {
     } // match
     
     
+    /**
+     * Checks whether this regexp matches to beginning of presented sequence.
+     * @return true or false depending on quality of best match.
+     */
     public boolean matchFromStart(String seq) {
         splitTokens(seq);
         matchResult = root.matchAt(0);
@@ -179,42 +211,85 @@ public class Regex {
     } // match
     
     
+    /**
+     * Returns result of the last match. Result is strongly linked to "distance"
+     * between strings being fuzzy matched, i.e. it is roughly count of
+     * dissimilarities divided by length of matched region.
+     * 
+     * For example "Free" and "Frej" match result is 0.25 while "Bold" and "Frej"
+     * gives 1.0.
+     * @return measure of dissimilarity, 0 means exact match.
+     */
     public double getMatchResult() {
         return matchResult;
     } // getMatchResult
     
     
+    /**
+     * Gives replacement string which is generated after successful match
+     * according to rules specified in regexp pattern.
+     * @return replacement as a string.
+     */
     public String getReplacement() {
         return root.getReplacement();
     } // getReplacement
     
     
+    /**
+     * Tells the character position (of string which have been matched) from
+     * which the match starts.
+     * @return position, as integer from range 0 .. seq.length() - 1
+     */
     public int getMatchStart() {
         return tokenPos[firstMatched];
     } // getMatchStart
     
     
+    /**
+     * Tells the character position (of string which have been matched) where
+     * last match ends (i.e. position strictly following last character of matched region).
+     * @return position, as integer from range 0 .. seq.length() - 1
+     */
     public int getMatchEnd() {
         // returns position immediately following 
         return tokenPos[lastMatched] + tokens[lastMatched].length();
     } // getMatchEnd
     
     
+    /**
+     * Reconstructs pattern which was used for creation of this regexp.
+     * @return string representation of pattern.
+     */
     public String pattern() {
         return root.toString();
     } // pattern
     
     
+    /**
+     * Tells number of tokens in matched region (mostly important when pattern
+     * contains optional elements).
+     * @return token count.
+     */
     public int matchedTokenCount() {
         return root.getMatchLen();
     } // matchedTokenCount
     
     
+    /**
+     * Returns the part of matched string, which precedes matching region.
+     * String is trimmed of spaces since spaces are token delimiters.
+     * @return beginning of the seq used in presentInSequence etc.
+     */
     public String prefix() {
         return original.substring(0, getMatchStart()).trim();
     } // prefix
     
     
+    /**
+     * Returns the part of matched string, which follows matching region.
+     * String is trimmed of spaces since spaces are token delimiters.
+     * @return ending of the seq used in presentInSequence etc.
+     */
     public String suffix() {
         return original.substring(getMatchEnd()).trim();
     } // prefix

@@ -1,7 +1,7 @@
 package frej;
 
 
-public class Numeric extends Elem {
+class Numeric extends Elem {
     
     
     protected int min, max;

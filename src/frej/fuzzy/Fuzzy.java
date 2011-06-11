@@ -4,18 +4,41 @@ package frej.fuzzy;
 import java.util.*;
 
 
+/**
+ * Class providing fuzzy string comparison.
+ * 
+ * It is used in fuzzy regexp matching, but could also be used
+ * alone, for fuzzy string matching or fuzzy substring search.
+ * 
+ * Based on Demerau-Levenshtein distance evaluation, i.e. there are four
+ * types of "mistakes" each counting as 1 point (char deletion, char adding,
+ * char replacement, swap of two adjacent chars).
+ * 
+ * Methods are static, and resulting variables too, so necessary values should
+ * be read before new matching/searching attempt.
+ * 
+ * @author Rodion Gorkovenko
+ */
 public class Fuzzy {
     
-    
-    public static final int MAX_PATTERN = 64;
-    public static final int MAX_SOURCE = 256;
-    
-    private static final int BIG_VALUE = 1000000;
-    public static int resultStart, resultEnd, resultIndex;
+    /** keeps starting position of matched region after substring search*/
+    public static int resultStart;
+    /** keeps ending position of matched region after substring search*/
+    public static int resultEnd;
+    /** keeps index of best match after matching against a list of strings*/
+    public static int resultIndex;
+    /** keeps best matched string after matching against a list of strings*/
     public static String matchedPattern;
-    public static double result, threshold = 0.34;
-    private static int[][] e = new int[MAX_PATTERN + 1][MAX_SOURCE + 1];
-    private static WayType[][] w = new WayType[MAX_PATTERN + 1][MAX_SOURCE + 1];
+    /** "distance" of last match (roughly mistakes count divided by length*/
+    public static double result;
+    /** if result of match is higher than threshold, boolean methods return "false" */
+    public static double threshold = 0.34;
+
+    protected static final int MAX_PATTERN = 64;
+    protected static final int MAX_SOURCE = 256;
+    protected static final int BIG_VALUE = 1000000;
+    protected static int[][] e = new int[MAX_PATTERN + 1][MAX_SOURCE + 1];
+    protected static WayType[][] w = new WayType[MAX_PATTERN + 1][MAX_SOURCE + 1];
     
     
     private static enum WayType {
@@ -23,6 +46,12 @@ public class Fuzzy {
     } // enum WayType
 
     
+    /**
+     * Tries to find substring "pattern" in the "source" and if successful,
+     * returns the position of the beginning of the match.
+     * @return position of found substring (0 .. source.length() - 1) or (-1) if
+     * substring was not found (with given threshold).
+     */
     public static int substrStart(CharSequence source, CharSequence pattern) {
         
         if (containability(source, pattern) < threshold)
@@ -32,6 +61,12 @@ public class Fuzzy {
     } // find
     
 
+    /**
+     * Tries to find substring "pattern" in the "source" and if successful,
+     * returns the position of the end of the match.
+     * @return position of found substring end (0 .. source.length() - 1) or (-1) if
+     * substring was not found (with given threshold).
+     */
     public static int substrEnd(CharSequence source, CharSequence pattern) {
         
         if (containability(source, pattern) < threshold)
@@ -41,11 +76,20 @@ public class Fuzzy {
     } // find
     
 
+    /**
+     * Tests whether "source" matches "pattern".
+     * @return true or false depending on match quality.
+     */
     public static boolean equals(CharSequence source, CharSequence pattern) {
         return similarity(source, pattern) < threshold;
     } // compare
     
     
+    /**
+     * Tests whether any of "patterns" is presented in "source" as substring.
+     * Stops on first good match.
+     * @return true or false depending on whether any of pattern search succeeds.
+     */
     public static boolean containsOneOf(CharSequence source, CharSequence... patterns) {
         
         for (CharSequence p : patterns) {
@@ -58,6 +102,11 @@ public class Fuzzy {
     } // containsOneOf
     
     
+    /**
+     * Core method for searching substring. Finds the region for which
+     * Demerau-Levenshtein distance is minimal.
+     * @return normalized best distance (i.e. distance / pattern.length())
+     */
     public static double containability(CharSequence source, CharSequence pattern) {
         int m = pattern.length() + 1;
         int n = source.length() + 1;
@@ -149,6 +198,12 @@ public class Fuzzy {
     } // containability
 
     
+    /**
+     * Given list or array of strings, searches for one which is best matched
+     * with whole original string (equality=true) or with some its substring
+     * (equality=false).
+     * @return best match result (normalized distance). 
+     */
     public static double bestEqual(String string, Object patterns, boolean equality) {
         String[] array;
         double value = Double.POSITIVE_INFINITY;
@@ -177,11 +232,17 @@ public class Fuzzy {
     } // bestEqual
     
     
+    /**
+     * Core method for measuring Demerau-Levenshtein distance between two strings.
+     * @return normalized distance (distance / average(source.length(), pattern.length()))
+     */
     public static double similarity(CharSequence source, CharSequence pattern) {
-        int m = pattern.length() + 1;
-        int n = source.length() + 1;
+        int m;
+        int n;
         char s, p, s1, p1;
         
+        m = pattern.length() + 1;
+        n = source.length() + 1;
         for (int x = 0; x < n; x++) {
             e[0][x] = x; 
         } // for
@@ -221,4 +282,4 @@ public class Fuzzy {
     } // similarity
 
 
-} // Strings
+} // Fuzzy

@@ -3,11 +3,21 @@ package test;
 import frej.Regex;
 
 
+/**
+ * This simple test is used in debugging to check that modifications did not
+ * frustrate fuzzy regexp mechanism.
+ * 
+ * @author Rodion Gorkovenko
+ */
 public class CmdLineTest {
 
-    // for debug purposes
+
+    /**
+     * Main method for executing as console application.
+     * Creates few patterns and makes some tests with them.
+     * Outputs result into standard output.
+     */
     public static void main(String... args) {
-        // (#1:20# > линия) <> (ВО ^ В > О)
         Regex fr = new Regex("(=((#1:20),linia),(^VO,(V,O)))");
         System.out.println(fr.pattern());
         

@@ -3,7 +3,7 @@ package frej;
 import frej.fuzzy.Fuzzy;
 
 
-public class Token extends Elem {
+class Token extends Elem {
 
     
     protected String token;

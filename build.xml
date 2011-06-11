@@ -4,6 +4,9 @@
     <property name="rootDir" value="."/>
     <property name="srcDir" value="${rootDir}/src"/>
     <property name="outDir" value="${rootDir}/bin"/>
+    <property name="docDir" value="${rootDir}/doc"/>
+    <property name="jarFile" value="${rootDir}/${ant.project.name}.jar"/>
+    <property name="docFile" value="${rootDir}/${ant.project.name}_doc.zip"/>
 
     <!-- following must be "on" or "off" -->
     <property name="includeDebugInfo" value="off" />
@@ -18,7 +21,7 @@
 
 
     <target depends="compile" name="jar">
-        <jar destfile="${rootDir}/${ant.project.name}.jar">
+        <jar destfile="${jarFile}">
             <fileset file="${outDir}/**"/>
             <manifest>
                 <attribute name="Main-Class" value="test.CmdLineTest"/>
@@ -30,8 +33,27 @@
     <target name="clean">
         <delete includeemptydirs="true">
             <fileset dir="${outDir}" includes="**"/>
-            <fileset dir="${rootDir}" includes="frej.jar"/>
+            <fileset dir="${docDir}" includes="**"/>
+            <fileset dir="${rootDir}" includes="${jarFile}"/>
+            <fileset dir="${rootDir}" includes="${docFile}"/>
         </delete>
+    </target>
+
+    <target name="doc" depends="compile">
+        <mkdir dir="${docDir}"/>
+        <javadoc destdir="${docDir}" access="public" noqualifier="java.lang"
+                windowtitle="FREJ - Fuzzy Regular Expressions for Java">
+            <packageset dir="${srcDir}">
+                <include name="**"/>
+            </packageset>
+        </javadoc>
+        <jar destfile="${docFile}">
+            <fileset file="${docDir}/**"/>
+        </jar>
+    </target>
+
+    
+    <target name="all" depends="jar,doc">
     </target>
 
 

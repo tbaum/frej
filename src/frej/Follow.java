@@ -1,7 +1,7 @@
 package frej;
 
 
-public class Follow extends Elem {
+class Follow extends Elem {
     
     
     public Follow(Regex owner, Elem... elems) {

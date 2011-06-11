@@ -1,7 +1,7 @@
 package frej;
 
 
-public abstract class Elem {
+class Elem {
 
     public static final int TYPE_TOKEN = 1;
     public static final int TYPE_BOTH = 2;
@@ -25,7 +25,9 @@ public abstract class Elem {
     } // FuzzyRegexElem
     
     
-    public abstract double matchAt(int i);
+    public double matchAt(int i) {
+        return Double.POSITIVE_INFINITY;
+    } // matchAt
     
     
     public int getMatchLen() {

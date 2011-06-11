@@ -3,7 +3,7 @@ package frej;
 import frej.fuzzy.Fuzzy;
 
 
-public class Optional extends Elem {
+class Optional extends Elem {
     
     
     protected Elem child;
