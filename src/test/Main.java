@@ -6,12 +6,23 @@ import java.util.*;
 import frej.*;
 
 
+/**
+ * This class uses frej library in the way similar to "grep" tool:
+ * you pass regexp pattern as a command line argument (you'd better use quotes)
+ * and then enter test lines. For each of lines program attempts to find a
+ * matching region according to pattern and if succeeds, return the string
+ * with the region changed by "regex.replacement". Try the example presented
+ * when you specify no patterns at all. 
+ * 
+ * @author Rodion Gorkovenko
+ */
 public class Main {
     
     
     private Main() {}
     
     
+    /** it is the main (and only) method of a class */
     public static void main(String... args) {
         Scanner in = new Scanner(System.in);
         String line;
@@ -28,12 +39,14 @@ public class Main {
         
         regex = new Regex(args[0]);
         
-        while (!(line = in.nextLine()).isEmpty()) {
-            if (regex.match(line)) {
-                System.out.println(regex.prefix() + regex.getReplacement() + regex.suffix());
-            } // if
-        } // while
-        
+        try {
+
+            while (!(line = in.nextLine()).isEmpty()) {
+                if (regex.match(line)) {
+                    System.out.println(regex.prefix() + regex.getReplacement() + regex.suffix());
+                } // if
+            } // while
+        } catch (Exception e) {}
     } // main
     
 

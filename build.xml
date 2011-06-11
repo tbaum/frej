@@ -24,7 +24,7 @@
         <jar destfile="${jarFile}">
             <fileset file="${outDir}/**"/>
             <manifest>
-                <attribute name="Main-Class" value="test.CmdLineTest"/>
+                <attribute name="Main-Class" value="test.Main"/>
             </manifest>
         </jar>
     </target>
