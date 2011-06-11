@@ -1,4 +1,4 @@
-package ru.rodiongork.frej;
+package frej;
 
 
 public class Follow extends Elem {

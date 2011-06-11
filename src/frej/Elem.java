@@ -1,4 +1,4 @@
-package ru.rodiongork.frej;
+package frej;
 
 
 public abstract class Elem {

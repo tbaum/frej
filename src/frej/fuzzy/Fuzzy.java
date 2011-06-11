@@ -1,4 +1,4 @@
-package ru.rodiongork.frej.strutil;
+package frej.fuzzy;
 
 
 import java.util.*;

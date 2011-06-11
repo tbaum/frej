@@ -1,0 +1,38 @@
+<project name="frej" default="jar" basedir=".">
+
+    
+    <property name="rootDir" value="."/>
+    <property name="srcDir" value="${rootDir}/src"/>
+    <property name="outDir" value="${rootDir}/bin"/>
+
+    <!-- following must be "on" or "off" -->
+    <property name="includeDebugInfo" value="off" />
+
+
+    <target name="compile">
+        <mkdir dir="${outDir}"/>
+        <javac srcdir="${srcDir}" destdir="${outDir}"
+                includeantruntime="${false}" debug="${includeDebugInfo}">
+        </javac>
+    </target>
+
+
+    <target depends="compile" name="jar">
+        <jar destfile="${rootDir}/${ant.project.name}.jar">
+            <fileset file="${outDir}/**"/>
+            <manifest>
+                <attribute name="Main-Class" value="test.CmdLineTest"/>
+            </manifest>
+        </jar>
+    </target>
+
+
+    <target name="clean">
+        <delete includeemptydirs="true">
+            <fileset dir="${outDir}" includes="**"/>
+            <fileset dir="${rootDir}" includes="frej.jar"/>
+        </delete>
+    </target>
+
+
+</project>

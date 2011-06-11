@@ -1,6 +1,6 @@
-package ru.rodiongork.frej;
+package frej;
 
-import ru.rodiongork.frej.strutil.Fuzzy;
+import frej.fuzzy.Fuzzy;
 
 
 public class Optional extends Elem {

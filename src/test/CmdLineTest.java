@@ -1,6 +1,6 @@
 package test;
 
-import ru.rodiongork.frej.*;
+import frej.Regex;
 
 
 public class CmdLineTest {
