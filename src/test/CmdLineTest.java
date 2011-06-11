@@ -10,6 +10,9 @@ import frej.Regex;
  * @author Rodion Gorkovenko
  */
 public class CmdLineTest {
+    
+    
+    private CmdLineTest() {}
 
 
     /**

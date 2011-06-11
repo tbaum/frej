@@ -34,8 +34,8 @@
         <delete includeemptydirs="true">
             <fileset dir="${outDir}" includes="**"/>
             <fileset dir="${docDir}" includes="**"/>
-            <fileset dir="${rootDir}" includes="${jarFile}"/>
-            <fileset dir="${rootDir}" includes="${docFile}"/>
+            <fileset file="${jarFile}"/>
+            <fileset file="${docFile}"/>
         </delete>
     </target>
 
