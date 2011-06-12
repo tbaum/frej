@@ -60,17 +60,7 @@ class Elem {
         
         if (replacement == null) {
             
-            if (matchReplacement != null) {
-                return matchReplacement;
-            } // if
-            
-            for (int i = 0; i < matchLen; i++) {
-                s.append(owner.tokens[matchStart + i]);
-                s.append(' ');
-            } // for
-            if (s.length() > 0) {
-                s.deleteCharAt(s.length() - 1);
-            } // if
+            return getMatchReplacement();
             
         } else {
         
@@ -89,13 +79,32 @@ class Elem {
     } //getReplacement
     
     
+    protected String getMatchReplacement() {
+        StringBuilder s = new StringBuilder();
+        
+        if (matchReplacement != null) {
+            return matchReplacement;
+        } // if
+        
+        for (int i = 0; i < matchLen; i++) {
+            s.append(owner.tokens[matchStart + i]);
+            s.append(' ');
+        } // for
+        if (s.length() > 0) {
+            s.deleteCharAt(s.length() - 1);
+        } // if
+        
+        return s.toString();
+    } // getMatchReplacement
+    
+    
     protected void saveGroup() {
         
         if (group == 0) {
             return;
         } // if
         
-        owner.groups[group - 'A'] = getReplacement();
+        owner.groups[group - 'A'] = getMatchReplacement();
     } // saveGroup
     
     
