@@ -38,9 +38,7 @@ class Token extends Elem {
             Fuzzy.similarity(owner.tokens[i], token);
         } // else
         
-        if (Fuzzy.result <= Fuzzy.threshold) {
-            matchLen = 1;
-        } // if
+        matchLen = 1;
 
         saveGroup();
         

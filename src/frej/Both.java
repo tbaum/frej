@@ -17,20 +17,26 @@ class Both extends Elem {
     
     @Override
     public double matchAt(int i) {
-        double res1, res2;
+        double res1, res2, v;
         int len1, len2;
         
         matchStart = i;
         
-        res1 = Math.max(children[0].matchAt(i), children[1].matchAt(i + children[0].getMatchLen()));
+        v = 1 - Math.min(children[0].matchAt(i), 1);
+        v *= 1 - Math.min(children[1].matchAt(i + children[0].getMatchLen()), 1);
+
+        res1 = 1 - Math.sqrt(v);
         len1 = children[0].getMatchLen() + children[1].getMatchLen();
 
-        res2 = Math.max(children[1].matchAt(i), children[0].matchAt(i + children[1].getMatchLen()));
+        v = 1 - Math.min(children[1].matchAt(i), 1);
+        v *= 1 - Math.min(children[0].matchAt(i + children[1].getMatchLen()), 1);
+
+        res2 = 1 - Math.sqrt(v);
         len2 = children[0].getMatchLen() + children[1].getMatchLen();
-        
+
         if (res1 < res2 || (res1 == res2 && len1 > len2)) {
-            matchLen = len1;
-            return res1;
+            len2 = len1;
+            res2 = res1;
         } // if
         
         matchLen = len2;

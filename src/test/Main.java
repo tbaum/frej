@@ -18,7 +18,10 @@ import frej.*;
  */
 public class Main {
     
+
+    private static boolean debug = System.getProperties().getProperty("DEBUG") != null;    
     
+
     private Main() {}
     
     
@@ -44,6 +47,9 @@ public class Main {
             while (!(line = in.nextLine()).isEmpty()) {
                 if (regex.match(line)) {
                     System.out.println(regex.prefix() + regex.getReplacement() + regex.suffix());
+                } // if
+                if (debug) {
+                    System.out.println(regex.getMatchResult());
                 } // if
             } // while
         } catch (Exception e) {}
