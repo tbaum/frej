@@ -1,7 +1,5 @@
 package frej;
 
-import frej.fuzzy.Fuzzy;
-
 
 class Optional extends Elem {
     
@@ -22,14 +20,8 @@ class Optional extends Elem {
         
         res = child.matchAt(i);
         
-        if (res <= Fuzzy.threshold) {
-            matchLen = child.getMatchLen();
-            matchReplacement = child.getReplacement();
-        } else {
-            matchLen = 0;
-            matchReplacement = null;
-            res = 0;
-        } // else
+        matchLen = child.getMatchLen();
+        matchReplacement = child.getReplacement();
         
         saveGroup();
         
