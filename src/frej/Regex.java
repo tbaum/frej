@@ -51,6 +51,7 @@ public class Regex {
     protected String original;
     protected int firstMatched, lastMatched;
     protected String[] groups = new String['Z' - 'A' + 1];
+    protected String allowedPunct = "/-";
     
     
     /**
@@ -295,6 +296,15 @@ public class Regex {
     } // prefix
     
     
+    /**
+     * Allows to set up which punctuation marks are allowed in the tokens
+     * By default only slash and dash i.e. punct = "/-"
+     */
+    public String setAllowedPunctuationMarks(String punct) {
+        return allowedPunct = punct;
+    } // setAllowedPunctuationMarks
+
+    
     protected void splitTokens(String expr) {
         List<String> tokenList = new LinkedList<String>();
         List<Integer> posList = new LinkedList<Integer>();
@@ -309,15 +319,16 @@ public class Regex {
             
             try {
                 c = expr.charAt(i);
-                charClass = Character.isLetter(c) ? CHAR_CLASS_LETTER :
-                        Character.isDigit(c) ? CHAR_CLASS_DIGIT : 
-                        c == '/' || c == '-' ? CHAR_CLASS_PUNCT : CHAR_CLASS_OTHER;
             } catch (IndexOutOfBoundsException e) {
                 c = 0;
                 charClass = CHAR_CLASS_OTHER;
             } // catch
-            
-            if (prevCharClass != charClass && s.length() > 0) {
+
+            charClass = Character.isLetter(c) ? CHAR_CLASS_LETTER :
+                    Character.isDigit(c) ? CHAR_CLASS_DIGIT : 
+                    allowedPunct.indexOf(c) >= 0 ? CHAR_CLASS_PUNCT : CHAR_CLASS_OTHER;
+
+            if ((prevCharClass != charClass || charClass == CHAR_CLASS_PUNCT) && s.length() > 0) {
                 tokenList.add(s.toString());
                 posList.add(i - s.length());
                 s.setLength(0);
