@@ -67,7 +67,7 @@ class Elem {
             for (int i = 0; i < replacement.length(); i++) {
                 char c = replacement.charAt(i);
                 if (c == '$') {
-                    s.append(owner.groups[replacement.charAt(++i) - 'A']);
+                    s.append(owner.getGroup(replacement.charAt(++i)));
                     continue;
                 } // if
                 s.append(c);
@@ -104,7 +104,7 @@ class Elem {
             return;
         } // if
         
-        owner.groups[group - 'A'] = getMatchReplacement();
+        owner.setGroup(group, getMatchReplacement());
     } // saveGroup
     
     

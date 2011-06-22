@@ -50,7 +50,7 @@ public class Regex {
     protected double matchResult;
     protected String original;
     protected int firstMatched, lastMatched;
-    protected String[] groups = new String['Z' - 'A' + 1];
+    protected Map<Character,String> groups = new HashMap<Character,String>();
     protected String allowedPunct = "/-";
     
     
@@ -157,6 +157,7 @@ public class Regex {
         int bestPos = -1;
         int bestLen = -1;
         
+        groups.clear();
         splitTokens(seq);
         
         for (int i = 0; i < tokens.length; i++) {
@@ -185,6 +186,7 @@ public class Regex {
      * @return true or false depending on quality of best matching variant.
      */
     public boolean match(String seq) {
+        groups.clear();
         splitTokens(seq);
         matchResult = root.matchAt(0);
         if (matchResult > Fuzzy.threshold || root.getMatchLen() != tokens.length) {
@@ -201,6 +203,7 @@ public class Regex {
      * @return true or false depending on quality of best match.
      */
     public boolean matchFromStart(String seq) {
+        groups.clear();
         splitTokens(seq);
         matchResult = root.matchAt(0);
         if (matchResult > Fuzzy.threshold) {
@@ -348,6 +351,20 @@ public class Regex {
             tokenPos[i] = posList.remove(0);
         } // for
     } // splitTokens
+
+
+    protected String getGroup(char g) {
+        String s = groups.get(Character.valueOf(g));
+        if (s == null) {
+            return "";
+        } // if
+        return s;
+    } // getGroup
+
+
+    protected void setGroup(char g, String s) {
+        groups.put(Character.valueOf(g), s);
+    } // setGroup
     
     
 } // class FuzzyRegex

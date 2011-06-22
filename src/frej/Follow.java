@@ -1,6 +1,9 @@
 package frej;
 
 
+import java.util.*;
+
+
 class Follow extends Elem {
     
     
@@ -34,27 +37,41 @@ class Follow extends Elem {
                 
                 while(j < children.length) {
                     double cur;
-                    cur = children[j].matchAt(i + len);
+                    
                     if (children[j] instanceof Optional) {
                         PartMatcher incl, excl;
+                        Map<Character,String> inclGroups, tempGroups;
+
+                        tempGroups = new HashMap<Character,String>(owner.groups);
+                        cur = children[j].matchAt(i + len);
                         incl = new PartMatcher(this);
                         incl.res *= 1 - Math.min(cur, 1);
                         incl.len = len + children[j].getMatchLen();
                         incl.s.append(children[j].getReplacement());
                         excl = new PartMatcher(this);
+                        
                         incl.matchAtFrom(i, j + 1);
+                        inclGroups = owner.groups;
+                        owner.groups = tempGroups;
                         excl.matchAtFrom(i, j + 1);
+                        
                         if (incl.res <= excl.res) {
                             res = incl.res;
                             len = incl.len;
                             s.replace(0, s.length(), incl.s.toString());
+                            owner.groups = inclGroups;
                         } else {
                             res = excl.res;
                             len = excl.len;
                             s.replace(0, s.length(), excl.s.toString());
                         } // else
+                        
                         break;
-                    } // if
+
+                    } else {
+                        cur = children[j].matchAt(i + len);
+                    } // else
+
                     res *= 1 - Math.min(cur, 1);
                     len += children[j].getMatchLen();
                     s.append(children[j].getReplacement());
