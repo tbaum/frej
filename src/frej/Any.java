@@ -35,7 +35,9 @@ class Any extends Elem {
             } // if
         } // for
 
-        owner.groups = tempGroups;
+        if (tempGroups != null) {
+            owner.groups = tempGroups;
+        } // if
         
         matchReplacement = (bestNum >= 0) ? children[bestNum].getReplacement() : null;
         saveGroup();

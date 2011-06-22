@@ -52,6 +52,8 @@ public class Main {
                     System.out.println(regex.getMatchResult());
                 } // if
             } // while
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         } catch (Exception e) {}
     } // main
     
