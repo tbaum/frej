@@ -52,6 +52,7 @@ public class Regex {
     protected int firstMatched, lastMatched;
     protected Map<Character,String> groups = new HashMap<Character,String>();
     protected String allowedPunct = "/-";
+    protected double threshold = Fuzzy.threshold;
     
     
     /**
@@ -246,7 +247,7 @@ public class Regex {
             } // if
         } // for
         
-        if (bestResult > Fuzzy.threshold) {
+        if (bestResult > threshold) {
             return -1;
         } // if
         
@@ -266,7 +267,7 @@ public class Regex {
         groups.clear();
         splitTokens(seq);
         matchResult = root.matchAt(0);
-        if (matchResult > Fuzzy.threshold || root.getMatchLen() != tokens.length) {
+        if (matchResult > threshold || root.getMatchLen() != tokens.length) {
             return false;
         } // if
         firstMatched = 0;
@@ -283,7 +284,7 @@ public class Regex {
         groups.clear();
         splitTokens(seq);
         matchResult = root.matchAt(0);
-        if (matchResult > Fuzzy.threshold) {
+        if (matchResult > threshold) {
             return false;
         } // if
         firstMatched = 0;
@@ -385,6 +386,24 @@ public class Regex {
     } // setAllowedPunctuationMarks
 
     
+    /**
+     * Returns value of threshold used in matching methods to decide whether matching result
+     * signifies match or mismatch. By default equals to frej.Fuzzy.threshold.
+     */
+    public double getThreshold() {
+        return threshold;
+    } // getThreshold
+    
+    
+    /**
+     * Sets value of threshold used in matching methods to decide whether matching result
+     * signifies match or mismatch. By default equals to frej.Fuzzy.threshold.
+     */
+    public void setThreshold(double t) {
+        threshold = t;
+    } // setThreshold
+    
+    
     protected void splitTokens(String expr) {
         List<String> tokenList = new LinkedList<String>();
         List<Integer> posList = new LinkedList<Integer>();
@@ -442,6 +461,6 @@ public class Regex {
     protected void setGroup(char g, String s) {
         groups.put(Character.valueOf(g), s);
     } // setGroup
-    
-    
+
+
 } // class FuzzyRegex
