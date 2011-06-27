@@ -42,7 +42,8 @@
     <target name="doc" depends="compile">
         <mkdir dir="${docDir}"/>
         <javadoc destdir="${docDir}" access="public" noqualifier="java.lang"
-                windowtitle="FREJ - Fuzzy Regular Expressions for Java">
+                windowtitle="FREJ - Fuzzy Regular Expressions for Java"
+                Overview="src/overview.html">
             <packageset dir="${srcDir}">
                 <include name="**"/>
             </packageset>

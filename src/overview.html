@@ -1,0 +1,65 @@
+<html>
+<body>
+
+Here are list of FREJ packages and description of its syntax.
+
+<h1>Fuzzy Regexp Syntax</h1>
+
+<p>
+New Fuzzy Regular Expression is created by instantiation of frej.Regex class.
+You need to pass "pattern" to constructor. This pattern describes what this
+regular expression should match. Here rules of pattern syntax are explained.
+</p>
+
+<hr>
+<h3>Common principles</h3>  
+<p>
+Pattern consist of simple structural elements enclosed in brackets.
+Elements usually are nested - in such case we say that "parent" element
+encloses one or more "child" elements. There are six element types:
+
+<ul>
+<li><b>Token</b> should be matched by similar sequence of letters;</br>
+<li><b>Follow</b> element lists child elements which should be matched in proper order;</li>
+<li><b>Any</b> element requires matching with any one of its children;</li>
+<li><b>Both</b> element have two children and requirres match both of them either
+in straight or reverse order;</li>
+<li><b>Optional</b> elment marks that its only child may be matched or skipped (which is better);</li>
+<li><b>Numeric</b> matches integer in specified range.</li>
+</ul>
+
+</p>
+
+<p>
+Additionally elements could specify substitution string for itself and
+group capturing mark to use match or substitution result in outer elements.
+</p>
+
+<hr>
+<h3>Common principles</h3>  
+<p>Here follows sample view of pattern which distinguishes between three
+US presidents and provides some substitution for further processing.
+</p>
+
+<pre>
+
+[^
+    (barack, {?h*}, obama)
+        | 44-th,
+    (= george, washington)
+        | 1-st,
+    ( {^ abraham, abe}, lincoln)
+        | 16-th
+]~A
+    | $A_president_\rof_U\_S\_A
+
+</pre>
+
+<hr>
+<h3>Further description</h3>  
+<p>
+This part of documentation is not finished right now. Please check "Guide and
+Examples" on <a href="http://frej.sf.net" target="_top">FREJ site</a> or wait a few days.
+</p>
+</body>
+</html>

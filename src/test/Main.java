@@ -35,10 +35,13 @@ public class Main {
         
         if (args.length < 1) {
             System.err.println("Pattern should be specified. Example:");
-            System.err.println("    java -jar frej.jar \"(give,(#)~A,(^doll*,buck*,usd))|got $A dollars\"");
+            System.err.println("    java -jar frej.jar \"(give,(#)~A,(^doll*,buck*,usd))|got_$A_dollars\"");
             System.err.println("        give 5 dollars");
             System.err.println("        giv 70 bucks");
             System.err.println("        gave 1000 usd");
+            System.err.println();
+            System.err.println("Pattern also could be specified in text file:");
+            System.err.println("    java -jar frej.jar --pattern=<filename> [--charset=<charset-name>]");
             return;
         } // if
         
