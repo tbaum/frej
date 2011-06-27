@@ -27,7 +27,7 @@ class Any extends Elem {
             double cur;
             owner.groups = new HashMap<Character,String>(oldGroups);
             cur = children[j].matchAt(i); 
-            if (cur < bestResult) {
+            if (cur < bestResult || cur == bestResult && children[j].getMatchLen() > matchLen) {
                 bestNum = j;
                 bestResult = cur;
                 matchLen = children[j].getMatchLen();
