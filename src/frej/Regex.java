@@ -59,14 +59,91 @@ public class Regex {
      * presented pattern. Behavior is undefined if pattern is incorrect.
      */
     public Regex(String pattern) {
+        pattern = fixPattern(pattern);
         root = parse(pattern);
     } // FuzzyRegex
     
     
+    protected String fixPattern(String pattern) {
+        StringBuilder b = new StringBuilder();
+        Stack<Character> brackets = new Stack<Character>();
+        int slashes = 0;
+        int lineCount = 1, posCount = 0;
+        
+        for (int i = 0; i < pattern.length(); i++) {
+            char c = pattern.charAt(i);
+            posCount++;
+            
+            b.append(c);
+            
+            if (c == '\\') {
+                slashes++;
+                continue;
+            } // if
+            
+            if ((slashes & 1) == 0) {
+                if (Character.isWhitespace(c)) {
+                    if (c == '\r' || c == '\n') {
+                        lineCount++;
+                        posCount = 0;
+                    } // if
+                    b.deleteCharAt(b.length() - 1);
+                } else if ("({[".indexOf(c) >= 0) {
+                    brackets.push(Character.valueOf(c));
+                    b.replace(b.length() - 1, b.length(), "(");
+                } else if (")}]".indexOf(c) >= 0) {
+                    if (brackets.empty() || brackets.peek() != "({[".charAt(")}]".indexOf(c))) {
+                        throw new IllegalArgumentException("Mismatched bracket at " + lineCount + ":" + posCount);
+                    } // if
+                    brackets.pop();
+                    b.replace(b.length() - 1, b.length(), ")");
+                } // if
+            } // if
+            
+            slashes = 0;
+        } // for
+        
+        return b.toString();
+    } // fixPattern
+    
+    
+    protected String eliminateEscapes(String s) {
+        StringBuilder b = new StringBuilder();
+        boolean prevSlash = false;
+        
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            
+            if (!prevSlash) {
+                if (c == '\\') {
+                    prevSlash = true;
+                } else if (c == '_') {
+                    b.append(' ');
+                } else {
+                    b.append(c);
+                } // else
+            } else {
+                prevSlash = false;
+                if (c == 'r') {
+                    b.append('\r');
+                } else if (c == 'n') {
+                    b.append('\n');
+                } else {
+                    b.append(c);
+                } // else
+            } // else
+        } // for
+        
+        return b.toString();
+    } // eliminateEscapes
+    
+    
     protected Elem parse(String pattern) {
         Elem retVal;
-        String[] parts = pattern.split("\\|(?!.*\\))", 2);
+        String[] parts;
         char g = 0;
+        
+        parts = pattern.split("\\|(?!.*[^\\\\]\\))", 2); // split by "pipe" symbol not enclosed in brackets
         
         pattern = parts[0];
         
@@ -108,11 +185,11 @@ public class Regex {
             } // switch
             
         } else {
-            retVal = new Token(this, pattern.toString()); 
+            retVal = new Token(this, eliminateEscapes(pattern)); 
         } // else
         
         if (parts.length > 1) {
-            retVal.setReplacement(parts[1]);
+            retVal.setReplacement(eliminateEscapes(parts[1]));
         } // if
         
         retVal.setGroup(g);
@@ -144,7 +221,7 @@ public class Regex {
         } // for
         
         return list.toArray(new Elem[list.size()]);
-    } // pattern
+    } // parseList
     
     
     /**

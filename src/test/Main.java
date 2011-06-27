@@ -2,6 +2,8 @@ package test;
 
 
 import java.util.*;
+import java.io.*;
+import java.nio.charset.*;
 
 import frej.*;
 
@@ -40,7 +42,16 @@ public class Main {
             return;
         } // if
         
-        regex = new Regex(args[0]);
+        if (fetchParameter(args, "pattern") != null) {
+            String pattern = loadPattern(fetchParameter(args, "pattern"), fetchParameter(args, "charset"));
+            if (pattern == null) {
+                System.err.println("Problem with loading pattern from file");
+                System.exit(1);
+            } // if
+            regex = new Regex(pattern);
+        } else {
+            regex = new Regex(args[0]);
+        } // else
         
         try {
 
@@ -56,6 +67,64 @@ public class Main {
             e.printStackTrace();
         } catch (Exception e) {}
     } // main
+    
+    
+    private static String fetchParameter(String[] cmdLineArgs, String name) {
+        
+        name = "--" + name + "=";
+        
+        for (String s : cmdLineArgs) {
+            if (s.startsWith(name)) {
+                return s.substring(name.length());
+            } // if
+        } // for
+        
+        return null;
+    } // fetchParameter
+    
+    
+    private static String loadPattern(String fileName, String charsetName) {
+        BufferedReader in;
+        StringBuilder b;
+        
+        if (fileName == null) {
+            return null;
+        } // if
+        
+        if (charsetName == null) {
+            charsetName = Charset.defaultCharset().name();
+        } // if
+        
+        try {
+            in = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), Charset.forName(charsetName)));
+        } catch (FileNotFoundException e) {
+            return null;
+        } // catch
+        
+        b = new StringBuilder();
+        
+        while(true) {
+            String s;
+            
+            try {
+                s = in.readLine();
+            } catch (IOException e) {
+                return null;
+            } // catch
+            
+            if (s == null) {
+                if (b.length() > 0) {
+                    b.deleteCharAt(b.length() - 1);
+                } // if
+                break;
+            } // if
+            
+            b.append(s);
+            b.append('\r');
+        } // while
+        
+        return b.toString();
+    } // loadPattern
     
 
 } // class Main
