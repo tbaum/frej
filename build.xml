@@ -25,6 +25,9 @@
             <fileset file="${outDir}/**"/>
             <manifest>
                 <attribute name="Main-Class" value="test.Main"/>
+                <attribute name="Implementation-Title" value="FREJ (Free Regular Expressions for Java)"/>
+                <attribute name="Implementation-Version" value="0.9 beta"/>
+                <attribute name="Implementation-Vendor" value="http://frej.sf.net"/>
             </manifest>
         </jar>
     </target>
