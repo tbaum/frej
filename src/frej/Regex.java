@@ -116,7 +116,17 @@ public class Regex {
                     brackets.pop();
                     b.replace(b.length() - 1, b.length(), ")");
                 } // if
-            } // if
+            } else {
+                // opening and closing round brackets should be presented as \o and \c
+                switch (c) {
+                    case '(':
+                        b.replace(b.length() - 1, b.length(), "o");
+                        break;
+                    case ')':
+                        b.replace(b.length() - 1, b.length(), "c");
+                        break;
+                } // switch
+            } // else
             
             slashes = 0;
         } // for
@@ -146,6 +156,10 @@ public class Regex {
                     b.append('\r');
                 } else if (c == 'n') {
                     b.append('\n');
+                } else if (c == 'o') {
+                    b.append('(');
+                } else if (c == 'c') {
+                    b.append(')');
                 } else {
                     b.append(c);
                 } // else
