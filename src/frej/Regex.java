@@ -69,12 +69,29 @@ public class Regex {
         StringBuilder b = new StringBuilder();
         Stack<Character> brackets = new Stack<Character>();
         int slashes = 0;
+        boolean comment = false;
+        char prevChar = 0;
         int lineCount = 1, posCount = 0;
         
         for (int i = 0; i < pattern.length(); i++) {
             char c = pattern.charAt(i);
             posCount++;
             
+            if (comment) {
+                if (c == '\r' || c == '\n') {
+                    comment = false;
+                } else {
+                    continue;
+                } // else
+            } else {
+                if (prevChar == '/' && c == '/') {
+                    b.deleteCharAt(b.length() - 1);
+                    comment = true;
+                    continue;
+                } // if
+            } // else
+            
+            prevChar = c;
             b.append(c);
             
             if (c == '\\') {
