@@ -47,6 +47,19 @@ class Token extends Elem {
     
     
     @Override
+    public String getReplacement() {
+        
+        if (replacement == null) {
+            
+            return partial ? getMatchReplacement() : token;
+            
+        } // if
+        
+        return super.getReplacement();
+    } //getReplacement
+    
+    
+    @Override
     public String toString() {
         return token + super.toString();
     } // toString

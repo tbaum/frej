@@ -66,8 +66,13 @@ class Elem {
         
             for (int i = 0; i < replacement.length(); i++) {
                 char c = replacement.charAt(i);
-                if (c == '$') {
-                    s.append(owner.getGroup(replacement.charAt(++i)));
+                if (c == '$' && i < replacement.length() - 1) {
+                    c = replacement.charAt(++i);
+                    if (c != '$') {
+                        s.append(owner.getGroup(c));
+                    } else {
+                        s.append(getMatchReplacement());
+                    } // else
                     continue;
                 } // if
                 s.append(c);
