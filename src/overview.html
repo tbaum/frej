@@ -1,7 +1,7 @@
 <html>
 <body>
 
-Here are list of FREJ packages and description of its syntax.
+Here are list of FREJ packages and guide on its usage.
 
 <h1>Fuzzy Regexp Syntax</h1>
 
@@ -11,7 +11,7 @@ You need to pass "pattern" to constructor. This pattern describes what this
 regular expression should match. Here rules of pattern syntax are explained.
 </p>
 
-<hr>
+<hr/>
 <h3>Common principles</h3>  
 <p>
 Pattern consist of simple structural elements enclosed in brackets.
@@ -19,13 +19,13 @@ Elements usually are nested - in such case we say that "parent" element
 encloses one or more "child" elements. There are six element types:
 
 <ul>
-<li><b>Token</b> should be matched by similar sequence of letters;</br>
-<li><b>Follow</b> element lists child elements which should be matched in proper order;</li>
-<li><b>Any</b> element requires matching with any one of its children;</li>
-<li><b>Both</b> element have two children and requirres match both of them either
+<li><a href="#token">Token</a> should be matched by similar sequence of letters;</br>
+<li><a href="#follow">Follow</a> element lists child elements which should be matched in proper order;</li>
+<li><a href="#any">Any</a> element requires matching with any one of its children;</li>
+<li><a href="#both">Both</a> element have two children and requirres match both of them either
 in straight or reverse order;</li>
-<li><b>Optional</b> elment marks that its only child may be matched or skipped (which is better);</li>
-<li><b>Numeric</b> matches integer in specified range.</li>
+<li><a href="#optional">Optional</a> elment marks that its only child may be matched or skipped (which is better);</li>
+<li><a href="#numeric">Numeric</a> matches integer in specified range.</li>
 </ul>
 
 </p>
@@ -35,13 +35,13 @@ Additionally elements could specify substitution string for itself and
 group capturing mark to use match or substitution result in outer elements.
 </p>
 
-<hr>
-<h3>Common principles</h3>  
+<hr/>
+<h3>Pattern example</h3>  
 <p>Here follows sample view of pattern which distinguishes between three
 US presidents and provides some substitution for further processing.
 </p>
 
-<pre>
+<pre style="font-weight:bold">
 
 [^
     (barack, {?h*}, obama)
@@ -55,11 +55,138 @@ US presidents and provides some substitution for further processing.
 
 </pre>
 
-<hr>
+<hr/>
+<h3>String processing</h3>
+<p>
+When {@link frej.Regex Regex} is instantiated and initialized by some pattern,
+it is ready for using against text strings by using one of methods:
+<ul>
+<li>{@link frej.Regex#match match(String text)} - compares "text" with pattern,
+supposing that pattern should fit "text" at whole;</li>
+<li>{@link frej.Regex#matchFromStart matchFromStart(String text)} - compares
+"text" with pattern, supposing that "text" possibly have extra tokens at the
+end, i.e. is longer than pattern requires (unused tail could be fetched after
+matching via {@link frej.Regex#suffix suffix()} method;</li>
+<li>{@link frej.Regex#presentInSequence presentInSequence(String text)} -
+searches in the "text" for a fragment, which is best match for pattern (unused
+beginning and ending of the text could be fetched after matching via
+{@link frej.Regex#prefix prefix()} and {@link frej.Regex#suffix suffix()} methods.
+</ul>
+</p>
+
+<p><b>Tokenization</b><br/>
+When one of matching methods is called, text, which should be compared with
+pattern, is broken up into separate tokens. All regexp elements, use the
+input string as an array of tokens, and try to match one or more tokens from
+this array. Tokens could be of following types:
+<ul>
+<li>sequence of letters;</li>
+<li>sequence of digits;</li>
+<li>punctuation mark;</li>
+</ul>
+Not all punctuation marks beget tokens - this could be set up by
+{@link frej.Regex#setAllowedPunctuationMarks Regex.setAllowedPunctuationMarks(String marks)}.
+Each of allowed punctuation marks creates separate token even if marks follow
+each other. All other punctuation marks as well as spaces, linefeeds etc.
+are regarded as token separators.</p>
+<p>
+For example, if we use (by default) "slash" and "dash" ('/' and '-') as
+allowed punctuation marks and try to process the line "<b>Baker street 221/B"</b>
+it is tokenized as ["<b>Baker</b>", "<b>st</b>", "<b>221</b>", "<b>/</b>", "<b>B</b>"].
+</p>
+<p>
+If then we apply to this text pattern like <b>[ (^Baker,Taylor,Smith), st*, (#) ]</b>,
+then "Baker" token would match Baker-Taylor-Smith choice (element <i>Any</i>), "street" would
+match "st*" (element <i>Token</i>) and 221 would match <i>Numeric</i> element -
+you see that these three elements (Any, Token and Numeric) are linked together by
+outer brackets (i.e. <i>Follow</i> element) and because of this tokens which
+would be matched by them should immediately follow one another.
+</p>
+
+<hr/>
+<h3>Pattern characters, escapes and special symbols</h3>
+<p>
+All pattern elements except "Token" are enclosed in brackets. To improve
+readability three types of brackets are allowed - <b>(round), [square], and
+{curly}</b>. There is no difference between them, though opening and closing
+brackets of the element should be of one type. For example:
+<ul>
+<li><b>{ (^Baker,Taylor,Smith), st*, [#] }</b> is the same as a pattern above;</li>
+</ul>
+<li><b>{[^Baker, Taylor, Smith],st*,(#)}</b> is the same too, (spaces
+are skipped when processing pattern);</li>
+<li><b>((^Baker, Taylor, Smith],st*,(#})</b> is incorrect because opening
+and closing bracket types do not match.</li>
+</p>
+
+<p>
+As it was mentioned, spaces, tabulations, line-feeds and carriage-returns
+in the pattern are skipped. It allows more convenient formatting of patterns,
+especially when specifying them in the file. Spaces are anyway token separators
+by default so they are useless in pattern. However, if pattern provides
+substitution strings, these strings could require spaces and other characters.
+Special symbols could be used in such cases.
+</p>
+
+<p>
+<b>Special symbols</b><br/>
+<ul>
+<li>Space could be specified by using underscore: <b>(Baker,st)|Sherlock_Holmes</b> would
+give substitution "Sherlock Holmes";</li>
+<li>Underscores themselves could be specified by escaping them with backslash:
+<b>(B\_a\_k\_e\_r,st)</b> would match "B_a_k_e_r st";</li>
+<li>line-feed and carriage-return could be specified by <b>\n</b> and <b>\r</b>;</li>
+<li>brackets could be specified by escaping them with backslash, i.e.
+<b>\(</b>, <b>\)</b>, <b>\[</b>, <b>\]</b>, <b>\{</b>, <b>\}</b>;</li>
+<li>round brackets could also be specified by <b>\o</b> and <b>\c</b> (opening
+and closing respectively) to improve readability;</li>
+<li>Backslash is specified by escaping it with another backslash <b>\\</b>.</li>
+</ul>
+</p>
+
+<hr/>
+<h1>Element types description</h1>
+
+<p>
+Note: all elements except "Token" are enclosed in brackets.<br/>Of those,
+which needs brackets all except "Follow" have one-character type mark immediately after
+opening bracket.<br/>
+Elements which have several children should separate them with comma.
+</p>
+
+<h3 id="token">Token</h3>
+<p>
+
+</p>
+
+<h3 id="follow">Follow</h3>
+<br/>
+<br/>
+<br/>
+<h3 id="any">Any</h3>
+<br/>
+<br/>
+<br/>
+<h3 id="both">Both</h3>
+<br/>
+<br/>
+<br/>
+<h3 id="optional">Optional</h3>
+<br/>
+<br/>
+<br/>
+<h3 id="numeric">Numeric</h3>
+<br/>
+<br/>
+<br/>
+
+<hr/>
 <h3>Further description</h3>  
 <p>
-This part of documentation is not finished right now. Please check "Guide and
+This part of documentation is not completed right now. Please check "Guide and
 Examples" on <a href="http://frej.sf.net" target="_top">FREJ site</a> or wait a few days.
 </p>
+
+
 </body>
 </html>
