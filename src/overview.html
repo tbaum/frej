@@ -1,7 +1,7 @@
 <html>
 <body>
 
-Here are list of FREJ packages and guide on its usage.
+Here are list of <a href="http://frej.sf.net">FREJ</a> packages and guide on its usage.
 
 <h1>Fuzzy Regexp Syntax</h1>
 
@@ -103,6 +103,14 @@ outer brackets (i.e. <i>Follow</i> element) and because of this tokens which
 would be matched by them should immediately follow one another.
 </p>
 
+<p><b>Result</b><br/>
+Result of comparing text with pattern is evaluated as <b>double</b> value, which have meaning of
+difference between text and pattern. Value of <b>0.0</b> means exact match. Result of matching complex
+pattern against some text is evaluated by special rules explained below. All of matching methods
+decide that matching is successfull if result is greater than <i>threshold</i> (which is initially
+<b>0.34</b> and could be changed with help of {@link frej.Regex#setThreshold Regex.setThreshold(double)}.
+</p>
+
 <hr/>
 <h3>Pattern characters, escapes and special symbols</h3>
 <p>
@@ -156,29 +164,119 @@ Elements which have several children should separate them with comma.
 
 <h3 id="token">Token</h3>
 <p>
-
+This is the simplest element. It is specified by simple writing supposed token, as it should appear
+in text, if it is written correctly. Special ability is that if token element has a star symbol <b>"*"</b> at
+the end, it means that element may match only beginning of the token, skipping unused characters at end.
+</p>
+<p>
+Token is matched in fuzzy way by calling {@link frej.fuzzy.Fuzzy#similarity Fuzzy.similarity(CharSequence text, CharSequence pattern)}.
+</p>
+<p>
+<b>Result</b> of matching some token against "Token" element is the result returned by fuzzy matching method
+and is roughly equal to count of mistakes divided by average between length of pattern and length of text.
+Mistake is absence of symbol, extra symbol, replacement of one symbol with another and swap of two neighbor symbols.
 </p>
 
 <h3 id="follow">Follow</h3>
-<br/>
-<br/>
-<br/>
+<p>
+This element is constructed simply by enclosing some child elements in brackets:<br/>
+<b>( child1, child2, ..., childN )</b><br/>
+tokens of text being matched should match each of child elements in the sequentially in the same order.
+However if among child elements (or their children) there are "Optional" element, it (according to its design)
+could be skipped. For example <b>(apple, beats, (?clean), dust)</b>:
+<ul>
+<li>matches "<b>aple bets claen duust</b>";</li>
+<li>matches "<b>appl beatz dust</b>";</li>
+<li>does not match "<b>appl never beatz dust</b>";</li>
+<li>does not match "<b>appl beatz wet dust</b>".</li>
+</ul>
+</p>
+<p>
+<b>Result</b> of matching sequence of tokens against "Follow" element is such that:<br/>
+- if any child yields result of <b>1.0</b> or greater, total result is <b>1.0</b>;<br/>
+- if all children yield the same result <b>X</b>, total result is equal to this value;<br/>
+- total result is between best and worst of children results.<br/>
+These rules have some "corrective" behavior - for example if one child gives result of <b>0.5</b> and other
+of <b>0.0</b> then their total would be close to <b>0.3</b> - i.e. if some child fits very well, some other
+is allowed to fit more poorly if when matched alone.
+</p>
+<p>
+Exact rule of result evaluation is the following (similar to geometric mean):<br/>
+<b>E<sub>total</sub> = 1 - ( (1 - E<sub>1</sub>) * (1 - E<sub>1</sub>) * ... * (1 - E<sub>N</sub>) )<sup>1/N</sup></b><br/>
+where E<sub>i</sub> is the result of matching i-th child (truncated to 1.0 if it was greater).
+</p>
+<p>
+Result evaluation became complicated if "Optional" element exists among children. In this case results
+for two variants are compared - including this skippable part and excluding it - and then best is chosen.
+</p>
+
 <h3 id="any">Any</h3>
-<br/>
-<br/>
-<br/>
+<p>
+This element is constructed by enclosing some children in brackets and putting "<b>^</b>" mark immediately
+after opening bracket:<br/>
+<b>(^ child1, child2, ..., childN )</b><br/>
+each of children is tested against the same tokens and best matching children is chosen.
+If child elements contain substitution strings, then one of them would be returned as substitution for
+parent element, depending on which child was matched
+For example <b>(apple|Jane, (banana, tree)|Mike, pear|Liza)</b>:
+<ul>
+<li>matches and converts "<b>aple</b>" to "<b>Jane</b>";</li>
+<li>matches and converts "<b>bonano three</b>" to "<b>Mike</b>";</li>
+<li>does not match "<b>pear tree</b>" (and returns nothing for substitution);</li>
+</ul>
+</p>
+<p>
+<b>Result</b> of matching against "Any" is equal to result of chosen child (i.e. best of child results).
+</p>
+<p>
+When "Any" could be matched in several ways with the same result (for example if there is "Optional" among
+subchildren), then longest variant is selected (i.e. one, which grabs more tokens than others).
+</p>
+
 <h3 id="both">Both</h3>
-<br/>
-<br/>
-<br/>
+<p>
+This element is constructed by enclosing exactly two children in brackets and putting "<b>=</b>" mark
+immediately after opening bracket:<br/>
+<b>(= child1, child2 )</b><br/>
+both children should be matched with tokens of input text sequentially, but in any order.
+</p>
+<p>
+I.e. <b>(=A,B)</b> equals <b>(^(A,B),(B,A))</b> and is evaluated and substituted just in this manner.
+</p>
+
 <h3 id="optional">Optional</h3>
-<br/>
-<br/>
-<br/>
+<p>
+This element is constructed by enclosing other element (i.e. the only child) in brackets and putting "<b>?</b>" mark immediately
+after opening bracket:<br/>
+<b>(? child)</b><br/>
+It is usable only inside other elements (like "Follow" or "Both"), where it allows some of children to be
+skipped, if this give better match result.
+</p>
+<p>
+<b>Result</b> is equal to result of child element, if it was not skipped. Otherwise result is not counted
+(i.e. if "Follow" element have <b>N</b> children and one of them was "Optional", and was skipped, then
+result of "Follow" is evaluated as if consisting of N-1 elements only).
+</p>
+
 <h3 id="numeric">Numeric</h3>
-<br/>
-<br/>
-<br/>
+<p>
+This element is constructed by putting "<b>#</b>" mark immediately
+after opening bracket and optionally specifying range of number to be matched.
+<ul>
+<li><b>(#)</b> - mathces any token which represents <b>integer</b> value;</li>
+<li><b>(#N)</b> - matches only if integer is between 1 and N inclusively;</li>
+<li><b>(#M:N)</b> - matches only if integer is between M and N inclusively.</li>
+</ul>
+</p>
+<p>
+<b>Result</b> is equal to <b>0.0</b> if token is numeric and fits in specified range. Otherwise
+result is equal to <b>1.0</b>
+</p>
+<p>
+Such element type is convenient because it is usually not good idea to match numbers in fuzzy way,
+but often is important to check the range of number (when applied to enumerated floors, avenues,
+departments etc.)
+</p>
 
 <hr/>
 <h3>Further description</h3>  
