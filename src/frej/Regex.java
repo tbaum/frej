@@ -63,7 +63,7 @@ public class Regex {
     public Regex(String pattern) {
         String ssubs[];
         pattern = fixPattern(pattern);
-        ssubs = pattern.split("(?<!\\\\):");
+        ssubs = pattern.split("::");
         for (int i = 1; i < ssubs.length; i++) {
             int p;
             for (p = 0; Character.isLetterOrDigit(ssubs[i].charAt(p)); p++);
