@@ -53,6 +53,7 @@ public class Regex {
     protected Map<Character,String> groups = new HashMap<Character,String>();
     protected String allowedPunct = "/-";
     protected double threshold = Fuzzy.threshold;
+    protected Map<String,Elem> subs = new HashMap<String,Elem>();
     
     
     /**
@@ -60,8 +61,15 @@ public class Regex {
      * presented pattern. Behavior is undefined if pattern is incorrect.
      */
     public Regex(String pattern) {
+        String ssubs[];
         pattern = fixPattern(pattern);
-        root = parse(pattern);
+        ssubs = pattern.split("(?<!\\\\):");
+        for (int i = 1; i < ssubs.length; i++) {
+            int p;
+            for (p = 0; Character.isLetterOrDigit(ssubs[i].charAt(p)); p++);
+            subs.put(ssubs[i].substring(0, p), parse(ssubs[i].substring(p)));
+        } // for
+        root = parse(ssubs[0]);
     } // FuzzyRegex
     
     
@@ -212,6 +220,13 @@ public class Regex {
                 
             case '#':
                 retVal = new Numeric(this, expr);
+                break;
+            
+            case '@':
+                if (!subs.containsKey(expr)) {
+                    throw new RuntimeException("Undefined sub '" + expr + "'!");
+                } // if
+                retVal = subs.get(expr);
                 break;
                 
             default:
