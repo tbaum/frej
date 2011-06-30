@@ -269,6 +269,7 @@ public class Regex {
         double bestResult = Double.POSITIVE_INFINITY;
         int bestPos = -1;
         int bestLen = -1;
+        Map<Character,String> tempGroups = null;
         
         groups.clear();
         splitTokens(seq);
@@ -279,6 +280,8 @@ public class Regex {
                 bestResult = cur;
                 bestPos = i;
                 bestLen = root.getMatchLen();
+                tempGroups = groups;
+                groups = new HashMap<Character,String>();
             } // if
         } // for
         
@@ -286,6 +289,7 @@ public class Regex {
             return -1;
         } // if
         
+        groups = tempGroups;
         matchResult = bestResult;
         firstMatched = bestPos;
         lastMatched = bestPos + bestLen - 1; 

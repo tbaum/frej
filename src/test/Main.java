@@ -32,6 +32,7 @@ public class Main {
         Scanner in = new Scanner(System.in);
         String line;
         Regex regex;
+        int matchMode = 0;
         
         if (args.length < 1) {
             System.err.println("Pattern should be specified. Example:");
@@ -42,7 +43,24 @@ public class Main {
             System.err.println();
             System.err.println("Pattern also could be specified in text file:");
             System.err.println("    java -jar frej.jar --pattern=<filename> [--charset=<charset-name>]");
+            System.err.println();
+            System.err.println("Matching mode could be selected (default='exact'):");
+            System.err.println("    java -jar frej.jar --mode=(exact|start|substr)");
             return;
+        } // if
+        
+        if (fetchParameter(args, "mode") != null) {
+            String mode = fetchParameter(args, "mode");
+            if (mode.equals("exact")) {
+                matchMode = 0;
+            } else if (mode.equals("start")) {
+                matchMode = 1;
+            } else if (mode.equals("substr")) {
+                matchMode = 2;
+            } else {
+                System.err.println("Error in mode (" + mode +")");
+                return;
+            } // else
         } // if
         
         if (fetchParameter(args, "pattern") != null) {
@@ -59,8 +77,19 @@ public class Main {
         try {
 
             while (!(line = in.nextLine()).isEmpty()) {
-                if (regex.match(line)) {
-                    System.out.println(regex.prefix() + regex.getReplacement() + regex.suffix());
+                boolean b = false;
+                switch (matchMode) {
+                case 0:
+                    b = regex.match(line);
+                    break;
+                case 1:
+                    b = regex.matchFromStart(line);
+                    break;
+                case 2:
+                    b = regex.presentInSequence(line) >= 0;
+                } // switch
+                if (b) {
+                    System.out.println(regex.getReplacement());
                 } // if
                 if (debug) {
                     System.out.println(regex.getMatchResult());

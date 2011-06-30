@@ -67,15 +67,27 @@ class Elem {
         
             for (int i = 0; i < replacement.length(); i++) {
                 char c = replacement.charAt(i);
+                
                 if (c == '$' && i < replacement.length() - 1) {
                     c = replacement.charAt(++i);
-                    if (c != '$') {
-                        s.append(owner.getGroup(c));
-                    } else {
+
+                    switch (c) {
+                    case '$':
                         s.append(getMatchReplacement());
-                    } // else
+                        break;
+                    case '<':
+                        s.append(owner.prefix());
+                        break;
+                    case '>':
+                        s.append(owner.suffix());
+                        break;
+                    default:
+                        s.append(owner.getGroup(c));
+                        break;
+                    } // switch
                     continue;
                 } // if
+                
                 s.append(c);
             } // for
             
