@@ -206,6 +206,10 @@ public class Regex {
                 retVal = new Optional(this, parse(expr));
                 break;
                 
+            case '!':
+                retVal = new Regular(this, eliminateEscapes(expr));
+                break;
+                
             case '#':
                 retVal = new Numeric(this, expr);
                 break;
