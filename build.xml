@@ -2,10 +2,13 @@
 
     
     <property name="rootDir" value="."/>
+    <property name="version" value="0_9b_rev29"/>
     <property name="srcDir" value="${rootDir}/src"/>
     <property name="outDir" value="${rootDir}/bin"/>
-    <property name="docDir" value="${rootDir}/doc"/>
+    <property name="docDirName" value="doc"/>
+    <property name="docDir" value="${rootDir}/${docDirName}"/>
     <property name="jarFile" value="${rootDir}/${ant.project.name}.jar"/>
+    <property name="archive" value="${rootDir}/${ant.project.name}_${version}.zip"/>
     <property name="docFile" value="${rootDir}/${ant.project.name}_doc.zip"/>
 
     <!-- following must be "on" or "off" -->
@@ -26,7 +29,7 @@
             <manifest>
                 <attribute name="Main-Class" value="test.Main"/>
                 <attribute name="Implementation-Title" value="FREJ (Free Regular Expressions for Java)"/>
-                <attribute name="Implementation-Version" value="0.9 beta (rev??)"/>
+                <attribute name="Implementation-Version" value="${version}"/>
                 <attribute name="Implementation-Vendor" value="http://frej.sf.net"/>
             </manifest>
         </jar>
@@ -34,7 +37,7 @@
 
 
     <target name="clean">
-        <delete includeemptydirs="true">
+        <delete includeemptydirs="true" quiet="true">
             <fileset dir="${outDir}" includes="**"/>
             <fileset dir="${docDir}" includes="**"/>
             <fileset file="${jarFile}"/>
@@ -51,13 +54,19 @@
                 <include name="**"/>
             </packageset>
         </javadoc>
-        <jar destfile="${docFile}">
+        <zip destfile="${docFile}">
             <fileset file="${docDir}/**"/>
-        </jar>
+        </zip>
     </target>
 
     
     <target name="all" depends="jar,doc">
+        <zip destfile="${archive}">
+            <fileset file="${jarFile}"/>
+            <fileset dir="${rootDir}">
+                <include name="${docDirName}/**"/>
+            </fileset>
+        </zip>
     </target>
 
 

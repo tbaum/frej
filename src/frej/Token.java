@@ -10,6 +10,10 @@ class Token extends Elem {
     protected boolean partial;
     
     
+    protected Token(Regex owner, int type) {
+        super(owner, type);
+    } // Token
+    
     public Token(Regex owner, String token) {
         super(owner, TYPE_TOKEN);
         if (token.charAt(token.length() - 1) != '*') {

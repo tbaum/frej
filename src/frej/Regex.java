@@ -229,6 +229,10 @@ public class Regex {
                 retVal = subs.get(expr);
                 break;
                 
+            case '$':
+                retVal = new Memory(this, expr);
+                break;
+                
             default:
                 retVal = new Follow(this, parseList(pattern.toString().substring(1, pattern.length() - 1)));
                 break;

@@ -11,6 +11,7 @@ class Elem {
     public static final int TYPE_OPTIONAL = 6;
     public static final int TYPE_NUMERIC = 7;
     public static final int TYPE_REGULAR = 8;
+    public static final int TYPE_MEMORY = 8;
     
     protected int type;
     protected Regex owner;
