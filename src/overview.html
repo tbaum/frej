@@ -3,6 +3,12 @@
 
 Here are list of <a href="http://frej.sf.net">FREJ</a> packages and guide on its usage.
 
+<style type="text/css">
+    pre{font-weight:bold;font-size:large;color:#400080;}
+    kbd{font-weight:bold;font-size:larger;color:#400080;}
+    em{font-weight:bold;font-style:normal;color:#006000;}
+</style>
+
 <h1>Contents</h1>
 
 <ol>
@@ -58,7 +64,7 @@ This is thoroughly explained in <a href="subst">Grouping and Substitutions</a>.
 <h3>Comments</h3>  
 <p>In multiline patterns it is possible to use comments. Comment is started
 with double-slash and ended with line-feed, carriage-return or pattern end.<br/>
-<b>[^frej,(?test)] //sample pattern</b><br/>
+<pre>[^frej,(?test)] //sample pattern</pre>
 Look further for multi-line examples.
 </p>
 
@@ -68,7 +74,7 @@ Look further for multi-line examples.
 US presidents and provides some substitution for further processing.
 </p>
 
-<pre style="font-weight:bold">
+<pre>
 [^ //President recognizer
     (barack, {?h*}, obama)
         | 44-th,
@@ -81,14 +87,14 @@ US presidents and provides some substitution for further processing.
 </pre>
 
 <hr/>
-<h3>Subexpressions</h3>  
+<h3 id="subexpressions">Subexpressions</h3>  
 <p>
 Pattern could contain more than one expression - in this case all except first
 are regarded as subexpressions. They should be marked with distinct names,
-prefixed by double-colon and could be referenced with "Subexpr" element:
+prefixed by double-colon and could be referenced with <a href="subexpr">Subexpr</a> element:
 </p>
 
-<pre style="font-weight:bold">
+<pre>
 //main expression
 [^
     {Baker,(@street)},
@@ -137,15 +143,16 @@ each other. All other punctuation marks as well as spaces, linefeeds etc.
 are regarded as token separators.</p>
 <p>
 For example, if we use (by default) "slash" and "dash" ('/' and '-') as
-allowed punctuation marks and try to process the line "<b>Baker street 221/B"</b>
-it is tokenized as ["<b>Baker</b>", "<b>st</b>", "<b>221</b>", "<b>/</b>", "<b>B</b>"].
+allowed punctuation marks and try to process the line <em>Baker street 221/B</em>
+it is tokenized as [<em>Baker</em>, <em>st</em>, <em>221</em>, <em>/</em>, <em>B</em>].
 </p>
 <p>
-If then we apply to this text pattern like <b>[ (^Baker,Taylor,Smith), st*, (#) ]</b>,
-then "Baker" token would match Baker-Taylor-Smith choice (element <i>Any</i>), "street" would
-match "st*" (element <i>Token</i>) and 221 would match <i>Numeric</i> element -
+If then we apply to this text pattern like <kbd>[ (^Baker,Taylor,Smith), st*, (#) ]</kbd>,
+then <em>Baker</em> token would match Baker-Taylor-Smith choice (element <a href="any">Any</a>),
+<em>street</em> would
+match "st*" (element <a href="token">Token</a>) and <em>221</em> would match <a href="numeric">Numeric</a> element -
 you see that these three elements (Any, Token and Numeric) are linked together by
-outer brackets (i.e. <i>Follow</i> element) and because of this tokens which
+outer brackets (i.e. <a href="follow">Follow</a> element) and because of this tokens which
 would be matched by them should immediately follow one another.
 </p>
 
@@ -153,24 +160,24 @@ would be matched by them should immediately follow one another.
 Result of comparing text with pattern is evaluated as <b>double</b> value, which have meaning of
 difference between text and pattern. Value of <b>0.0</b> means exact match. Result of matching complex
 pattern against some text is evaluated by special rules explained below. All of matching methods
-decide that matching is successfull if result is greater than <i>threshold</i> (which is initially
+decide that matching is successfull if result is greater than <b>threshold</b> (which is initially
 <b>0.34</b> and could be changed with help of {@link frej.Regex#setThreshold Regex.setThreshold(double)}.
 </p>
 
 <hr/>
 <h3>Pattern characters, escapes and special symbols</h3>
 <p>
-All pattern elements except "Token" are enclosed in brackets. To improve
+All pattern elements except <a href="token">Token</a> are enclosed in brackets. To improve
 readability three types of brackets are allowed - <b>(round), [square], and
 {curly}</b>. There is no difference between them, though opening and closing
 brackets of the element should be of one type. For example:
 <ul>
-<li><b>{ (^Baker,Taylor,Smith), st*, [#] }</b> is the same as a pattern above;</li>
-</ul>
-<li><b>{[^Baker, Taylor, Smith],st*,(#)}</b> is the same too, (spaces
+<li><kbd>{ (^ Baker, Taylor, Smith ), st*, [#] }</kbd> is the same as a pattern above;</li>
+<li><kbd>{[^Baker, Taylor, Smith],st*,(#)}</kbd> is the same too, (spaces
 are skipped when processing pattern);</li>
-<li><b>((^Baker, Taylor, Smith],st*,(#})</b> is incorrect because opening
+<li><kbd>((^Baker, Taylor, Smith],st*,(#})</kbd> is incorrect because opening
 and closing bracket types do not match.</li>
+</ul>
 </p>
 
 <p>
@@ -204,8 +211,8 @@ and closing respectively) to improve readability;</li>
 <h1 id="elements">Element types description</h1>
 
 <p>
-Note: all elements except "Token" are enclosed in brackets.<br/>Of those,
-which needs brackets all except "Follow" have one-character type mark immediately after
+Note: all elements except <a href="token">Token</a> are enclosed in brackets.<br/>Of those,
+which needs brackets all except <a href="follow">Follow</a> have one-character type mark immediately after
 opening bracket.<br/>
 Elements which have several children should separate them with comma.
 </p>
@@ -230,15 +237,15 @@ Mistake is absence of symbol, extra symbol, replacement of one symbol with anoth
 <h3 id="follow">Follow</h3>
 <p>
 This element is constructed simply by enclosing some child elements in brackets:<br/>
-<b>( child1, child2, ..., childN )</b><br/>
+<pre>( child1, child2, ..., childN )</pre>
 tokens of text being matched should match each of child elements in the sequentially in the same order.
 However if among child elements (or their children) there are "Optional" element, it (according to its design)
-could be skipped. For example <b>(apple, beats, (?clean), dust)</b>:
+could be skipped. For example <kbd>(apple, beats, (?clean), dust)</kbd>:
 <ul>
-<li>matches "<b>aple bets claen duust</b>";</li>
-<li>matches "<b>appl beatz dust</b>";</li>
-<li>does not match "<b>appl never beatz dust</b>";</li>
-<li>does not match "<b>appl beatz wet dust</b>".</li>
+<li>matches <em>aple bets claen duust</em>;</li>
+<li>matches <em>appl beatz dust</em>;</li>
+<li>does not match <em>appl never beatz dust</em>;</li>
+<li>does not match <em>appl beatz wet dust</em>.</li>
 </ul>
 </p>
 <p>
@@ -265,15 +272,15 @@ for two variants are compared - including this skippable part and excluding it -
 <p>
 This element is constructed by enclosing some children in brackets and putting "<b>^</b>" mark immediately
 after opening bracket:<br/>
-<b>(^ child1, child2, ..., childN )</b><br/>
+<pre>(^ child1, child2, ..., childN )</pre>
 each of children is tested against the same tokens and best matching children is chosen.
 If child elements contain substitution strings, then one of them would be returned as substitution for
 parent element, depending on which child was matched
-For example <b>(apple|Jane, (banana, tree)|Mike, pear|Liza)</b>:
+For example <kbd>(apple|Jane, (banana, tree)|Mike, pear|Liza)</kbd>:
 <ul>
-<li>matches and converts "<b>aple</b>" to "<b>Jane</b>";</li>
-<li>matches and converts "<b>bonano three</b>" to "<b>Mike</b>";</li>
-<li>does not match "<b>pear tree</b>" (and returns nothing for substitution);</li>
+<li>matches and converts <em>aple</em> to <em>Jane</em>;</li>
+<li>matches and converts <em>bonano three</em> to <em>Mike</em>;</li>
+<li>does not match <em>pear tree</em> (and returns nothing for substitution);</li>
 </ul>
 </p>
 <p>
@@ -289,11 +296,11 @@ subchildren), then longest variant is selected (i.e. one, which grabs more token
 <p>
 This element is constructed by enclosing exactly two children in brackets and putting "<b>=</b>" mark
 immediately after opening bracket:<br/>
-<b>(= child1, child2 )</b><br/>
+<pre>(= child1, child2 )</pre>
 both children should be matched with tokens of input text sequentially, but in any order.
 </p>
 <p>
-I.e. <b>(=A,B)</b> equals <b>(^(A,B),(B,A))</b> and is evaluated and substituted just in this manner.
+I.e. <kbd>(=A,B)</kbd> equals <kbd>(^(A,B),(B,A))</kbd> and is evaluated and substituted just in this manner.
 </p>
 
 <hr/>
@@ -301,7 +308,7 @@ I.e. <b>(=A,B)</b> equals <b>(^(A,B),(B,A))</b> and is evaluated and substituted
 <p>
 This element is constructed by enclosing other element (i.e. the only child) in brackets and putting "<b>?</b>" mark immediately
 after opening bracket:<br/>
-<b>(? child)</b><br/>
+<pre>(? child)</pre>
 It is usable only inside other elements (like "Follow" or "Both"), where it allows some of children to be
 skipped, if this give better match result.
 </p>
@@ -317,9 +324,9 @@ result of "Follow" is evaluated as if consisting of N-1 elements only).
 This element is constructed by putting "<b>#</b>" mark immediately
 after opening bracket and optionally specifying range of number to be matched.
 <ul>
-<li><b>(#)</b> - mathces any token which represents <b>integer</b> value;</li>
-<li><b>(#N)</b> - matches only if integer is between 1 and N inclusively;</li>
-<li><b>(#M:N)</b> - matches only if integer is between M and N inclusively.</li>
+<li><kbd>(#)</kbd> - mathces any token which represents <b>integer</b> value;</li>
+<li><kbd>(#N)</kbd> - matches only if integer is between <b>1</b> and <b>N</b> inclusively;</li>
+<li><kbd>(#M:N)</kbd> - matches only if integer is between <b>M</b> and <b>N</b> inclusively.</li>
 </ul>
 </p>
 <p>
@@ -333,6 +340,48 @@ departments etc.)
 </p>
 
 <hr/>
+<h3 id="regular">Regular</h3>
+<p>
+This element is constructed by putting "<b>!</b>" (exclamation mark) immediately after opening
+bracket and specifying standard regular expression after it. Some special symbols should be
+escaped. Regular expression have syntax as described in <b>java.util.regex.Pattern</b> and matches the
+token using <b>String.matches(String regex)</b>. Example:<br/>
+<pre>(!\[A-Za-z\]\{3\})</pre>
+matches token consisting of exactly 3 latin letters (like <em>IBM</em> or <em>NaN</em>).
+</p>
+<p>
+<b>Result</b> is equal to <b>0.0</b> if token matches specified expression. Otherwise
+result is equal to <b>1.0</b>
+</p>
+
+<hr/>
+<h3 id="subexpr">Subexpr</h3>
+<p>
+This element is constructed by putting "<b>@</b>" immediately after opening bracket and then specifying
+exact name of subexpression defined in the pattern (not necessarily later or earlier). See
+<a href="#subexpressions">subexpressions</a> for an example of usage and of definition subexpressions themselves.
+</p>
+<p>
+<b>Result</b> is just equal to result returned by subexpression.
+</p>
+
+<hr/>
+<h3 id="memory">Memory</h3>
+<p>
+This element is constructed by putting "<b>$</b>" immediately after opening bracket and then specifying
+the character which identifies some of marked <a href="#group">groups</a>.<br/>
+<pre>((^white|black,red|cyan,green|magenta,blue|yellow)~A,and,($A))</pre>
+Would match if pair of complementary colors specified, i.e. <em>white and black</em> or <em>blue yellow</em>.
+This element have sense mostly for complex substitutions.
+</p>
+<p>
+<b>Result</b> is evaluated as if <a href="token">Token</a> is matched using as a pattern the string,
+returned by previously
+matched group. I.e. if in our example <em>red</em> was matched and substituted with <em>cyan</em> in
+a group <b>A</b>, then memory element being matched against <em>cian</em> would return <b>0.25</b>.
+</p>
+
+<hr/>
 <h1 id="subst">Grouping and Substitutions</h1>
 
 <p>
@@ -340,7 +389,7 @@ Any pattern element could be followed by <b>substitution string</b> or
 <b>grouping mark</b> (or both, in the same order).
 </p>
 
-<h3>Grouping mark</h3>
+<h3 id="group">Grouping mark</h3>
 <p>
 Grouping is specified with "tilda" following capital latin letter (A..Z).
 This makes engine remember the replacement result of the element (which now
@@ -348,42 +397,42 @@ could be regarded as "group") in table of groups, so it could be later used
 in other matches or replacements.
 </p>
 <p>
-Example of grouping marks usage (with no purpose still):<br/>
-<b>[ (^Anna, Bill, Dave)~N, (^Johnson, Smith)~L ]</b>
+Example of grouping marks usage (with no special purpose):
+<pre>[ (^Anna, Bill, Dave)~N, (^Johnson, Smith)~L ]</pre>
 </p>
 
 <h3>Substitution string</h3>
 <p>
 For any element after it was matched, "replacement" or "substitution" could
-be retrieved. Normally for "Tokens" replacement equals to token pattern (if
+be retrieved. Normally for <a href="token">Tokens</a> replacement equals to token pattern (if
 pattern have no "*" at end). In all other cases replacement equals to matched
 token of the text. For parent elements replacement is concatenation of children
 replacements.
 </p>
 <p>
-For example if <b>(Anna, J*)</b> is matched against <b>anne Jackson</b>
-the replacement is equal to "AnnaJackson". 
+For example if <kbd>(Anna, J*)</kbd> is matched against <em>anne Jackson</em>
+the replacement is equal to <em>AnnaJackson</em>. 
 </p>
 <p>
 Any element could specify other replacement than default with help of pipe
-symbol <b>"|"</b> after which replacement string follows. For example:<br/>
-<b>(Anna, J*|Wilson)</b><br/>
-Now <b>"anne Jackson"</b> and <b>"Ann Johnson"</b> would have replacement
-<b>"AnnaWilson"</b>
+symbol <b>"|"</b> after which replacement string follows. For example:
+<pre>(Anna, J*|Wilson)</pre>
+Now <em>anne Jackson</em> and <em>Ann Johnson</em> would have replacement
+<em>"AnnaWilson"</em>
 </p>
 <p>
 Replacement string could include references to previously matched groups,
 specifying this with dollar sign <b>$</b> followed by letter (A..Z). In
 this case result of replacement of specified group would be inserted into
-replacement string:<br/>
-<b>[(^Anna, Elisa, Jessica|Jess)~A,(^Dowson,Jackson)] | Is_not_$A_beautiful?</b><br/>
-<kbd>Ann Douson => Is not Anna beautiful?<br/>
-Jessica Iakson => Is not Jess beautiful?<br/>
-William Wilson => (nothing)</kbd>
+replacement string:
+<pre>[(^Anna, Elisa, Jessica|Jess)~A,(^Dowson,Jackson)] | Is_not_$A_beautiful?</pre>
+<em>Ann Douson</em> => <em>Is not Anna beautiful?</em><br/>
+<em>Jessica Iakson</em> => <em>Is not Jess beautiful?</em><br/>
+<em>William Wilson</em> => <i>(nothing)</i>
 </p>
 <p>There are three other useful referencing marks:
 <ul>
-<li><b>$$</b> inserts matched token (useful with "Token" element because it
+<li><b>$$</b> inserts matched token (useful with <a href="token">Token</a> element because it
 gives not matched token but pattern itself as replacement by default)</li>
 <li><b>$&lt;</b> inserts {@link frej.Regex#prefix() prefix} - useful in
 top-level expression when matching with
