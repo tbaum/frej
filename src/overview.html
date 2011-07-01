@@ -3,7 +3,16 @@
 
 Here are list of <a href="http://frej.sf.net">FREJ</a> packages and guide on its usage.
 
-<h1>Fuzzy Regexp Syntax</h1>
+<h1>Contents</h1>
+
+<ol>
+<li><a href="#syntax">Fuzzy regexp syntax</a></li>
+<li><a href="#elements">Element types description</a></li>
+<li><a href="#subst">Substitutions</a></li>
+</ol>
+
+<hr/>
+<h1 id="syntax">Fuzzy Regexp Syntax</h1>
 
 <p>
 New Fuzzy Regular Expression is created by instantiation of frej.Regex class.
@@ -16,7 +25,7 @@ regular expression should match. Here rules of pattern syntax are explained.
 <p>
 Pattern consist of simple structural elements enclosed in brackets.
 Elements usually are nested - in such case we say that "parent" element
-encloses one or more "child" elements. There are six element types:
+encloses one or more "child" elements. There are six simple element types:
 
 <ul>
 <li><a href="#token">Token</a> should be matched by similar sequence of letters;</br>
@@ -25,7 +34,16 @@ encloses one or more "child" elements. There are six element types:
 <li><a href="#both">Both</a> element have two children and requirres match both of them either
 in straight or reverse order;</li>
 <li><a href="#optional">Optional</a> elment marks that its only child may be matched or skipped (which is better);</li>
-<li><a href="#numeric">Numeric</a> matches integer in specified range.</li>
+<li><a href="#numeric">Numeric</a> matches integer in specified range;</li>
+<li><a href="#regular">Regular</a> matches token with standard regexp.</li>
+</ul>
+
+Also two referencing element types are present: 
+
+<ul>
+<li><a href="#subexpr">Subexpr</a> is used to insert the same subexpression
+into several places of main expression;</br>
+<li><a href="#memory">Memory</a> matches token with result of earlier matched group.</li>
 </ul>
 
 </p>
@@ -33,6 +51,15 @@ in straight or reverse order;</li>
 <p>
 Additionally elements could specify substitution string for itself and
 group capturing mark to use match or substitution result in outer elements.
+This is thoroughly explained in <a href="subst">Grouping and Substitutions</a>.
+</p>
+
+<hr/>
+<h3>Comments</h3>  
+<p>In multiline patterns it is possible to use comments. Comment is started
+with double-slash and ended with line-feed, carriage-return or pattern end.<br/>
+<b>[^frej,(?test)] //sample pattern</b><br/>
+Look further for multi-line examples.
 </p>
 
 <hr/>
@@ -42,8 +69,7 @@ US presidents and provides some substitution for further processing.
 </p>
 
 <pre style="font-weight:bold">
-
-[^
+[^ //President recognizer
     (barack, {?h*}, obama)
         | 44-th,
     (= george, washington)
@@ -52,7 +78,27 @@ US presidents and provides some substitution for further processing.
         | 16-th
 ]~A
     | $A_president_\rof_U\_S\_A
+</pre>
 
+<hr/>
+<h3>Subexpressions</h3>  
+<p>
+Pattern could contain more than one expression - in this case all except first
+are regarded as subexpressions. They should be marked with distinct names,
+prefixed by double-colon and could be referenced with "Subexpr" element:
+</p>
+
+<pre style="font-weight:bold">
+//main expression
+[^
+    {Baker,(@street)},
+    {^Lenina,(@street)}],
+    {^Piccadilly,(?(@street))}
+]
+
+//subexpression definition
+::street
+(^st,street,lane)
 </pre>
 
 <hr/>
@@ -152,8 +198,10 @@ and closing respectively) to improve readability;</li>
 </ul>
 </p>
 
+
+
 <hr/>
-<h1>Element types description</h1>
+<h1 id="elements">Element types description</h1>
 
 <p>
 Note: all elements except "Token" are enclosed in brackets.<br/>Of those,
@@ -162,6 +210,7 @@ opening bracket.<br/>
 Elements which have several children should separate them with comma.
 </p>
 
+<hr/>
 <h3 id="token">Token</h3>
 <p>
 This is the simplest element. It is specified by simple writing supposed token, as it should appear
@@ -177,6 +226,7 @@ and is roughly equal to count of mistakes divided by average between length of p
 Mistake is absence of symbol, extra symbol, replacement of one symbol with another and swap of two neighbor symbols.
 </p>
 
+<hr/>
 <h3 id="follow">Follow</h3>
 <p>
 This element is constructed simply by enclosing some child elements in brackets:<br/>
@@ -210,6 +260,7 @@ Result evaluation became complicated if "Optional" element exists among children
 for two variants are compared - including this skippable part and excluding it - and then best is chosen.
 </p>
 
+<hr/>
 <h3 id="any">Any</h3>
 <p>
 This element is constructed by enclosing some children in brackets and putting "<b>^</b>" mark immediately
@@ -233,6 +284,7 @@ When "Any" could be matched in several ways with the same result (for example if
 subchildren), then longest variant is selected (i.e. one, which grabs more tokens than others).
 </p>
 
+<hr/>
 <h3 id="both">Both</h3>
 <p>
 This element is constructed by enclosing exactly two children in brackets and putting "<b>=</b>" mark
@@ -244,6 +296,7 @@ both children should be matched with tokens of input text sequentially, but in a
 I.e. <b>(=A,B)</b> equals <b>(^(A,B),(B,A))</b> and is evaluated and substituted just in this manner.
 </p>
 
+<hr/>
 <h3 id="optional">Optional</h3>
 <p>
 This element is constructed by enclosing other element (i.e. the only child) in brackets and putting "<b>?</b>" mark immediately
@@ -258,6 +311,7 @@ skipped, if this give better match result.
 result of "Follow" is evaluated as if consisting of N-1 elements only).
 </p>
 
+<hr/>
 <h3 id="numeric">Numeric</h3>
 <p>
 This element is constructed by putting "<b>#</b>" mark immediately
@@ -276,6 +330,69 @@ result is equal to <b>1.0</b>
 Such element type is convenient because it is usually not good idea to match numbers in fuzzy way,
 but often is important to check the range of number (when applied to enumerated floors, avenues,
 departments etc.)
+</p>
+
+<hr/>
+<h1 id="subst">Grouping and Substitutions</h1>
+
+<p>
+Any pattern element could be followed by <b>substitution string</b> or
+<b>grouping mark</b> (or both, in the same order).
+</p>
+
+<h3>Grouping mark</h3>
+<p>
+Grouping is specified with "tilda" following capital latin letter (A..Z).
+This makes engine remember the replacement result of the element (which now
+could be regarded as "group") in table of groups, so it could be later used
+in other matches or replacements.
+</p>
+<p>
+Example of grouping marks usage (with no purpose still):<br/>
+<b>[ (^Anna, Bill, Dave)~N, (^Johnson, Smith)~L ]</b>
+</p>
+
+<h3>Substitution string</h3>
+<p>
+For any element after it was matched, "replacement" or "substitution" could
+be retrieved. Normally for "Tokens" replacement equals to token pattern (if
+pattern have no "*" at end). In all other cases replacement equals to matched
+token of the text. For parent elements replacement is concatenation of children
+replacements.
+</p>
+<p>
+For example if <b>(Anna, J*)</b> is matched against <b>anne Jackson</b>
+the replacement is equal to "AnnaJackson". 
+</p>
+<p>
+Any element could specify other replacement than default with help of pipe
+symbol <b>"|"</b> after which replacement string follows. For example:<br/>
+<b>(Anna, J*|Wilson)</b><br/>
+Now <b>"anne Jackson"</b> and <b>"Ann Johnson"</b> would have replacement
+<b>"AnnaWilson"</b>
+</p>
+<p>
+Replacement string could include references to previously matched groups,
+specifying this with dollar sign <b>$</b> followed by letter (A..Z). In
+this case result of replacement of specified group would be inserted into
+replacement string:<br/>
+<b>[(^Anna, Elisa, Jessica|Jess)~A,(^Dowson,Jackson)] | Is_not_$A_beautiful?</b><br/>
+<kbd>Ann Douson => Is not Anna beautiful?<br/>
+Jessica Iakson => Is not Jess beautiful?<br/>
+William Wilson => (nothing)</kbd>
+</p>
+<p>There are three other useful referencing marks:
+<ul>
+<li><b>$$</b> inserts matched token (useful with "Token" element because it
+gives not matched token but pattern itself as replacement by default)</li>
+<li><b>$&lt;</b> inserts {@link frej.Regex#prefix() prefix} - useful in
+top-level expression when matching with
+{@link frej.Regex#presentInSequence(String text) presentInSequence};</li>
+<li><b>$&gt;</b> inserts {@link frej.Regex#prefix() prefix} - useful in
+top-level expression when matching with
+{@link frej.Regex#presentInSequence(String text) presentInSequence} or
+{@link frej.Regex#matchFromStart(String text) matchFromStart};</li>
+</ul>
 </p>
 
 <hr/>
