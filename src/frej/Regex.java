@@ -36,24 +36,24 @@ import frej.fuzzy.*;
  * 
  * @author Rodion Gorkovenko
  */
-public class Regex {
+public final class Regex {
     
     
-    protected static final int CHAR_CLASS_OTHER = 0;
-    protected static final int CHAR_CLASS_DIGIT = 1;
-    protected static final int CHAR_CLASS_LETTER = 2;
-    protected static final int CHAR_CLASS_PUNCT = 3;
+    private static final int CHAR_CLASS_OTHER = 0;
+    private static final int CHAR_CLASS_DIGIT = 1;
+    private static final int CHAR_CLASS_LETTER = 2;
+    private static final int CHAR_CLASS_PUNCT = 3;
     
-    protected Elem root;
-    protected String[] tokens;
-    protected int[] tokenPos;
-    protected double matchResult;
-    protected String original;
-    protected int firstMatched, lastMatched;
-    protected Map<Character,String> groups = new HashMap<Character,String>();
-    protected String allowedPunct = "/-";
-    protected double threshold = Fuzzy.threshold;
-    protected Map<String,Elem> subs = new HashMap<String,Elem>();
+    private Elem root;
+    String[] tokens;
+    private int[] tokenPos;
+    private double matchResult;
+    private String original;
+    private int firstMatched, lastMatched;
+    Map<Character,String> groups = new HashMap<Character,String>();
+    private String allowedPunct = "/-";
+    private double threshold = Fuzzy.threshold;
+    private Map<String,Elem> subs = new HashMap<String,Elem>();
     
     
     /**
@@ -73,7 +73,7 @@ public class Regex {
     } // FuzzyRegex
     
     
-    protected String fixPattern(String pattern) {
+    private String fixPattern(String pattern) {
         StringBuilder b = new StringBuilder();
         Stack<Character> brackets = new Stack<Character>();
         int slashes = 0;
@@ -143,7 +143,7 @@ public class Regex {
     } // fixPattern
     
     
-    protected String eliminateEscapes(String s) {
+    private String eliminateEscapes(String s) {
         StringBuilder b = new StringBuilder();
         boolean prevSlash = false;
         
@@ -178,7 +178,7 @@ public class Regex {
     } // eliminateEscapes
     
     
-    protected Elem parse(String pattern) {
+    private Elem parse(String pattern) {
         Elem retVal;
         String[] parts;
         char g = 0;
@@ -253,7 +253,7 @@ public class Regex {
     } // parse
     
     
-    protected Elem[] parseList(String pattern) {
+    private Elem[] parseList(String pattern) {
         List<Elem> list = new LinkedList<Elem>();
         StringBuilder s = new StringBuilder(pattern);
         int brackets = 0;
@@ -462,7 +462,7 @@ public class Regex {
     } // setThreshold
     
     
-    protected void splitTokens(String expr) {
+    private void splitTokens(String expr) {
         List<String> tokenList = new LinkedList<String>();
         List<Integer> posList = new LinkedList<Integer>();
         StringBuilder s = new StringBuilder();
@@ -507,7 +507,7 @@ public class Regex {
     } // splitTokens
 
 
-    protected String getGroup(char g) {
+    String getGroup(char g) {
         String s = groups.get(Character.valueOf(g));
         if (s == null) {
             return "";
@@ -516,7 +516,7 @@ public class Regex {
     } // getGroup
 
 
-    protected void setGroup(char g, String s) {
+    void setGroup(char g, String s) {
         groups.put(Character.valueOf(g), s);
     } // setGroup
 

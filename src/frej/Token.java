@@ -3,31 +3,21 @@ package frej;
 import frej.fuzzy.Fuzzy;
 
 
-class Token extends Elem {
+final class Token extends Elem {
 
     
-    protected String token;
-    protected boolean partial;
+    private String token;
+    private boolean partial;
     
     
-    protected Token(Regex owner, int type) {
-        super(owner, type);
-    } // Token
-    
-    public Token(Regex owner, String token) {
-        super(owner, TYPE_TOKEN);
-        if (token.charAt(token.length() - 1) != '*') {
-            this.token = token;
-            partial = false;
-        } else {
-            this.token = token.substring(0, token.length() - 1);
-            partial = true;
-        } // else
+    Token(Regex owner, String token) {
+        super(owner);
+        changePattern(token);
     } // FuzzyRegexToken
 
     
     @Override
-    public double matchAt(int i) {
+    double matchAt(int i) {
         
         matchStart = i;
         matchLen = 0;
@@ -51,7 +41,7 @@ class Token extends Elem {
     
     
     @Override
-    public String getReplacement() {
+    String getReplacement() {
         
         if (replacement == null) {
             
@@ -67,6 +57,17 @@ class Token extends Elem {
     public String toString() {
         return token + super.toString();
     } // toString
+
+
+    void changePattern(String pattern) {
+        if (pattern == null || pattern.charAt(pattern.length() - 1) != '*') {
+            token = pattern;
+            partial = false;
+        } else {
+            this.token = pattern.substring(0, pattern.length() - 1);
+            partial = true;
+        } // else
+    } // changePattern
     
     
 } // class FuzzyRegexToken

@@ -1,43 +1,29 @@
 package frej;
 
 
-class Elem {
+abstract class Elem {
 
-    public static final int TYPE_TOKEN = 1;
-    public static final int TYPE_BOTH = 2;
-    public static final int TYPE_FOLLOW = 3;
-    public static final int TYPE_ANY = 4;
-    public static final int TYPE_NUM = 5;
-    public static final int TYPE_OPTIONAL = 6;
-    public static final int TYPE_NUMERIC = 7;
-    public static final int TYPE_REGULAR = 8;
-    public static final int TYPE_MEMORY = 8;
-    
-    protected int type;
-    protected Regex owner;
-    protected int matchStart, matchLen;
-    protected Elem[] children;
-    protected String replacement, matchReplacement;
-    protected char group;
+    Regex owner;
+    int matchStart, matchLen;
+    Elem[] children;
+    String replacement, matchReplacement;
+    char group;
     
     
-    public Elem(Regex owner, int type) {
+    Elem(Regex owner) {
         this.owner = owner;
-        this.type = type;
     } // FuzzyRegexElem
     
     
-    public double matchAt(int i) {
-        return Double.POSITIVE_INFINITY;
-    } // matchAt
+    abstract double matchAt(int i);
     
     
-    public int getMatchLen() {
+    int getMatchLen() {
         return matchLen;
     } // getMatchLen
     
     
-    protected String childrenString(String prefix, String suffix) {
+    String childrenString(String prefix, String suffix) {
         StringBuilder s = new StringBuilder(prefix);
         
         for (int i = 0; i < children.length; i++) {
@@ -52,12 +38,12 @@ class Elem {
     } // childrenString
     
     
-    public void setReplacement(String repl) {
+    void setReplacement(String repl) {
         replacement = repl;
     } // setReplacement
     
     
-    public String getReplacement() {
+    String getReplacement() {
         StringBuilder s = new StringBuilder();
         
         if (replacement == null) {
@@ -98,7 +84,7 @@ class Elem {
     } //getReplacement
     
     
-    protected String getMatchReplacement() {
+    String getMatchReplacement() {
         StringBuilder s = new StringBuilder();
         
         if (matchReplacement != null) {
@@ -117,7 +103,7 @@ class Elem {
     } // getMatchReplacement
     
     
-    protected void saveGroup() {
+    void saveGroup() {
         
         if (group == 0) {
             return;
@@ -127,7 +113,7 @@ class Elem {
     } // saveGroup
     
     
-    public void setGroup(char g) {
+    void setGroup(char g) {
         group = g;
     } // setGroup
     

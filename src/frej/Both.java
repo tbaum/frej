@@ -1,12 +1,12 @@
 package frej;
 
 
-class Both extends Elem {
+final class Both extends Elem {
     
-    protected Elem expr;
+    private Elem expr;
     
-    public Both(Regex owner, Elem... elems) {
-        super(owner, TYPE_BOTH);
+    Both(Regex owner, Elem... elems) {
+        super(owner);
         
         if (elems.length != 2) {
             throw new RuntimeException("Incorrect subexpressions number for BOTH element");
@@ -19,7 +19,7 @@ class Both extends Elem {
     
     
     @Override
-    public double matchAt(int i) {
+    double matchAt(int i) {
         double res;
         
         matchStart = i;

@@ -4,17 +4,17 @@ package frej;
 import java.util.*;
 
 
-class Follow extends Elem {
+final class Follow extends Elem {
     
     
-    public Follow(Regex owner, Elem... elems) {
-        super(owner, TYPE_FOLLOW);
+    Follow(Regex owner, Elem... elems) {
+        super(owner);
         children = elems;
     } // FuzzyRegexFollow
     
     
     @Override
-    public double matchAt(int i) {
+    double matchAt(int i) {
         
         class PartMatcher {
             public int len;

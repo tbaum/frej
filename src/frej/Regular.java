@@ -1,20 +1,20 @@
 package frej;
 
 
-public class Regular extends Elem {
+class Regular extends Elem {
 
     
-    String pattern;
+    private String pattern;
     
     
-    public Regular(Regex owner, String pattern) {
-        super(owner, TYPE_REGULAR);
+    Regular(Regex owner, String pattern) {
+        super(owner);
         this.pattern = pattern;
     } // Regular
     
     
     @Override
-    public double matchAt(int i) {
+    double matchAt(int i) {
         matchStart = i;
         matchLen = 0;
         

@@ -19,7 +19,7 @@ import java.util.*;
  * 
  * @author Rodion Gorkovenko
  */
-public class Fuzzy {
+public final class Fuzzy {
     
     /** keeps starting position of matched region after substring search*/
     public static int resultStart;

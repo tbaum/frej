@@ -4,16 +4,16 @@ package frej;
 class Optional extends Elem {
     
     
-    protected Elem child;
+    private Elem child;
     
     
-    public Optional(Regex owner, Elem elem) {
-        super(owner, TYPE_OPTIONAL);
+    Optional(Regex owner, Elem elem) {
+        super(owner);
         child = elem;
     } // FuzzyRegexOptional
     
     @Override
-    public double matchAt(int i) {
+    double matchAt(int i) {
         double res;
         
         matchStart = i;

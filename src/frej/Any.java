@@ -4,17 +4,17 @@ package frej;
 import java.util.*;
 
 
-class Any extends Elem {
+final class Any extends Elem {
 
     
-    public Any(Regex owner, Elem... elems) {
-        super(owner, TYPE_ANY);
+    Any(Regex owner, Elem... elems) {
+        super(owner);
         children = elems;
     } // FuzzyRegexAny
     
     
     @Override
-    public double matchAt(int i) {
+    double matchAt(int i) {
         double bestResult = Double.POSITIVE_INFINITY;
         Map<Character,String> tempGroups = null;
         Map<Character,String> oldGroups = new HashMap<Character,String>(owner.groups);

@@ -1,14 +1,14 @@
 package frej;
 
 
-class Numeric extends Elem {
+final class Numeric extends Elem {
     
     
-    protected int min, max;
+    private int min, max;
     
     
-    public Numeric(Regex owner, String param) {
-        super(owner, TYPE_NUMERIC);
+    Numeric(Regex owner, String param) {
+        super(owner);
         
         String[] parts = param.split(":");
         
@@ -27,7 +27,7 @@ class Numeric extends Elem {
     
     
     @Override
-    public double matchAt(int i) {
+    double matchAt(int i) {
         int val;
         
         matchStart = i;
