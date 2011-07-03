@@ -4,6 +4,9 @@ FREJ CONTRIBUTOR AGREEMENT
 sample, graphic, specification, manual, documentation, or any other 
 material posted or submitted to a project by any person other than its author.
 
+In cases, when source files being contributed are based upon previous versions
+of the same files, 'contribution' refers only to changes made to these files.
+
 The person who submitted contribution is referred as 'contributor'.
 
 'Derivative' of contribution is any similar material which may be based upon
