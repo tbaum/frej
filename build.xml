@@ -66,6 +66,12 @@
             <fileset dir="${rootDir}">
                 <include name="${docDirName}/**"/>
             </fileset>
+            <fileset dir="${rootDir}">
+                <include name="readme.txt"/>
+                <include name="sources.txt"/>
+                <include name="license_gpl3.txt"/>
+                <include name="license_lgpl3.txt"/>
+            </fileset>
         </zip>
     </target>
 

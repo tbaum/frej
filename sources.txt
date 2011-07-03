@@ -1,0 +1,31 @@
+According to LGPL, with distribution of FREJ you should have its full sources
+or assurance that you may access sources whenever you want.
+
+I, Rodion Gorkovenko, as FREJ author and project administrator decided that
+usually library users are not interested in its sources, especially if it is
+used as command-line utility.
+
+Due to this decision, sources are not included in distribution.
+
+However if you are interested in FREJ sources, here I assure you that you
+always could reach it via project's web-page.
+
+While project is hosted on SourceForge, the best idea is to get sources
+via standard SVN interface from FREJ repository. If you are developer, you
+know your prefered way to do this.
+
+If you are not a developer, I dare to advice you not to try to read or use
+these sources because, though project is little and simple enough, its sources
+are not very simple and very clear (it is very common with algorithms which
+deals with text parsing). However you can access sources following links from
+main web-page:
+
+http://frej.sf.net
+
+then click
+
+"Project Info"
+
+then click
+
+"Code" / "SVN Browse"
