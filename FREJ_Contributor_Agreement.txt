@@ -1,0 +1,47 @@
+FREJ CONTRIBUTOR AGREEMENT
+
+1. Term 'contribution' refers to any source code, object code, patch, tool,
+sample, graphic, specification, manual, documentation, or any other 
+material posted or submitted to a project by any person other than its author.
+
+The person who submitted contribution is referred as 'contributor'.
+
+'Derivative' of contribution is any similar material which may be based upon
+that contribution itself.
+
+2. Project status
+
+FREJ is open-source project under LGPL v3.0 license.
+It is developed by me with
+educational purpose, but could be, possibly, used in commercial projects
+by its author or any other person.
+
+3. Authorship, ownership and administration of project
+
+Regardless of any contributions, Rodion Gorkovenko (Saint-Petersburg, Russia)
+is the only author of project itself and its only administrator and owner.
+
+Person, who submits any contribution is regarded as author of this exactly
+contribution (i.e. this exactly revision), but have no author rights to
+any derivatives.
+
+4. Contributor agrees that project owner:
+- could do any things in relation to contribution, as
+if its owner too;
+- may register a copyright in your contribution and exercise all ownership rights associated with it;
+- has not any duty to consult with, obtain the consent of, pay or render an accounting to the other for any use or 
+distribution of your contribution.
+
+5. Contributor have right at any time refer to his contribution (via link
+to proper repository revision) as to work done by him, to represent his skills
+to (potential) employers, teachers etc.
+
+Project administrator will try to preserve repository so that all contributors
+could always access their contributions.
+
+6. For any contribution made, contributor should insert in its header comments the following inscription:
+
+Author of this contribution - <full name, city and country of contributor>
+- completely agrees with FREJ CONTRIBUTOR AGREEMENT of latest revision,
+which is submitted at the root of the same repository, where this file is
+submitted.
