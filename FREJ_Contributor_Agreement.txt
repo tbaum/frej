@@ -1,5 +1,7 @@
 FREJ CONTRIBUTOR AGREEMENT
 
+Note: Be sure to check last paragraph before any contribution made!
+
 1. Term 'contribution' refers to any source code, object code, patch, tool,
 sample, graphic, specification, manual, documentation, or any other 
 material posted or submitted to a project by any person other than its author.
@@ -42,9 +44,9 @@ to (potential) employers, teachers etc.
 Project administrator will try to preserve repository so that all contributors
 could always access their contributions.
 
-6. For any contribution made, contributor should insert in its header comments the following inscription:
+6. Before commiting any contribution, contributor should see clearly all
+files in repository and this agreement too. Commiting any contribution
+contributor confirms that he agrees with all statements of this agreement.
 
-Author of this contribution - <full name, city and country of contributor>
-- completely agrees with FREJ CONTRIBUTOR AGREEMENT of latest revision,
-which is submitted at the root of the same repository, where this file is
-submitted.
+Contributor must not commit anything if he disagrees with these statements.
+Doing so is regarded as potentially harmful intention against Project Owner.
