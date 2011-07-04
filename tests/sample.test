@@ -1,0 +1,18 @@
+1 count of lines in the pattern (ending of the line after first number should be ignored)
+{(?test),frej)|IT_WORKS
+3 count of lines with test cases (ending of the line after first number should be ignored)
+test frej
+IT_WORKS
+testfrej
+
+tost freej
+IT_WORKS
+3 count of lines in the second test pattern
+{= (@good), (@job) }
+::good (^well,nice,pretty,good)
+::job  (^work|*1,job|*3,labour|*9)
+2 count of lines with test cases for second pattern
+Well Job
+Well*3
+pretty labour
+pretty*9

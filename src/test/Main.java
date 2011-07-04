@@ -51,7 +51,6 @@ public class Main {
     /** it is the main (and only) method of a class */
     public static void main(String... args) {
         Scanner in = new Scanner(System.in);
-        String line;
         Regex regex;
         int matchMode = 0;
         
@@ -91,15 +90,19 @@ public class Main {
                 System.exit(1);
             } // if
             regex = new Regex(pattern);
+        } else if (fetchParameter(args, "autotest") != null) {
+            processAutoTest(fetchParameter(args, "autotest"));
+            return;
         } else {
             regex = new Regex(args[0]);
-                   } // else
+        } // else
         
         try {
 
             while (in.hasNext()) {
-            	line = in.nextLine();
+            	String line = in.nextLine();
             	boolean b = false;
+
                 switch (matchMode) {
                 case 0:
                     b = regex.match(line);
@@ -179,6 +182,11 @@ public class Main {
         
         return b.toString();
     } // loadPattern
+
+
+    private static void processAutoTest(String fileName) {
+        System.err.println("Autotest initiated correctly, but it is not yet implemented!");
+    } // processAutoTest
     
 
 } // class Main
