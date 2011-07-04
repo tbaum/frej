@@ -93,12 +93,13 @@ public class Main {
             regex = new Regex(pattern);
         } else {
             regex = new Regex(args[0]);
-        } // else
+                   } // else
         
         try {
 
-            while (!(line = in.nextLine()).isEmpty()) {
-                boolean b = false;
+            while (in.hasNext()) {
+            	line = in.nextLine();
+            	boolean b = false;
                 switch (matchMode) {
                 case 0:
                     b = regex.match(line);
@@ -181,3 +182,4 @@ public class Main {
     
 
 } // class Main
+
