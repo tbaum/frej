@@ -58,7 +58,7 @@ final class Follow extends Elem {
                 while(j < children.length) {
                     double cur;
                     
-                    if (children[j] instanceof Optional) {
+                    if (children[j].optional) {
                         PartMatcher incl, excl;
                         Map<Character,String> inclGroups, tempGroups;
 

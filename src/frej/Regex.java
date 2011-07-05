@@ -217,24 +217,29 @@ public final class Regex {
         
         if (pattern.charAt(0) == '(') {
             String expr;
+            int p = 1;
+            boolean optional;
+
+            if (pattern.charAt(p) == '?') {
+                optional = true;
+                p++;
+            } else {
+                optional = false;
+            } // else
             
-            if (pattern.length() < 2 || pattern.charAt(pattern.length() - 1) != ')') {
+            if (pattern.length() <= p || pattern.charAt(pattern.length() - 1) != ')') {
                 throw new RuntimeException("Unclosed closure!"); 
             } // if
             
-            expr = pattern.toString().substring(2, pattern.length() - 1);
+            expr = pattern.toString().substring(p + 1, pattern.length() - 1);
             
-            switch (pattern.charAt(1)) {
+            switch (pattern.charAt(p)) {
             case '=':
                 retVal = new Both(this, parseList(expr));
                 break;
                 
             case '^':
                 retVal = new Any(this, parseList(expr));
-                break;
-                
-            case '?':
-                retVal = new Optional(this, parse(expr));
                 break;
                 
             case '!':
@@ -257,10 +262,12 @@ public final class Regex {
                 break;
                 
             default:
-                retVal = new Follow(this, parseList(pattern.toString().substring(1, pattern.length() - 1)));
+                retVal = new Follow(this, parseList(pattern.toString().substring(p, pattern.length() - 1)));
                 break;
                 
             } // switch
+
+            retVal.optional = optional;
             
         } else {
             retVal = new Token(this, eliminateEscapes(pattern)); 

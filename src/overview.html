@@ -317,6 +317,21 @@ It is usable only inside other elements (like "Follow" or "Both"), where it allo
 skipped, if this give better match result.
 </p>
 <p>
+In cases when child element is not <a href="#token">Token</a> an alternative short syntax
+is allowed. Instead of writing, for example:
+<pre>
+(?(^child1,child2))
+(?(#M:N))
+(?($X))
+</pre>
+it is possible simply omit brackets around Optional's child:
+<pre>
+(?^child1,child2)
+(?#M:N)
+(?$X)
+</pre>
+</p>
+<p>
 <b>Result</b> is equal to result of child element, if it was not skipped. Otherwise result is not counted
 (i.e. if "Follow" element have <b>N</b> children and one of them was "Optional", and was skipped, then
 result of "Follow" is evaluated as if consisting of N-1 elements only).

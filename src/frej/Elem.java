@@ -28,6 +28,7 @@ abstract class Elem {
     Elem[] children;
     String replacement, matchReplacement;
     char group;
+    boolean optional;
     
     
     Elem(Regex owner) {
