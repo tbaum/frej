@@ -84,12 +84,16 @@ public final class Regex {
         String ssubs[];
         pattern = fixPattern(pattern);
         ssubs = pattern.split("::");
-        for (int i = 1; i < ssubs.length; i++) {
+        for (int i = ssubs.length - 1; i >= 0; i--) {
             int p;
-            for (p = 0; Character.isLetterOrDigit(ssubs[i].charAt(p)); p++);
-            subs.put(ssubs[i].substring(0, p), parse(ssubs[i].substring(p)));
+            if (i > 0) {
+                for (p = 0; Character.isLetterOrDigit(ssubs[i].charAt(p)); p++);
+            } else {
+                p = 0;
+            } // else
+            subs.put(ssubs[i].substring(0, p), parse(ssubs[i].substring(p).replaceAll("\\s+", "")));
         } // for
-        root = parse(ssubs[0]);
+        root = subs.get("");
     } // FuzzyRegex
     
     
@@ -133,7 +137,6 @@ public final class Regex {
                         lineCount++;
                         posCount = 0;
                     } // if
-                    b.deleteCharAt(b.length() - 1);
                 } else if ("({[".indexOf(c) >= 0) {
                     brackets.push(Character.valueOf(c));
                     b.replace(b.length() - 1, b.length(), "(");
