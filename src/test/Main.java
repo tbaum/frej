@@ -113,16 +113,24 @@ public class Main {
                 case 2:
                     b = regex.presentInSequence(line) >= 0;
                 } // switch
+
                 if (b) {
                     System.out.println(regex.getReplacement());
-                } // if
+                } else {
+                    if (debug) {
+                        System.out.println("(match failed)");
+                    } // if
+                } // else
+
                 if (debug) {
                     System.out.println(regex.getMatchResult());
                 } // if
             } // while
+
         } catch (RuntimeException e) {
             e.printStackTrace();
         } catch (Exception e) {}
+
     } // main
     
     

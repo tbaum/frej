@@ -65,17 +65,19 @@ final class Follow extends Elem {
                         tempGroups = new HashMap<Character,String>(owner.groups);
                         cur = children[j].matchAt(i + len);
                         incl = new PartMatcher(this);
-                        incl.res *= 1 - Math.min(cur, 1);
-                        incl.len = len + children[j].getMatchLen();
-                        incl.s.append(children[j].getReplacement());
+                        if (cur < 1) {
+                            incl.res *= 1 - Math.min(cur, 1);
+                            incl.len = len + children[j].getMatchLen();
+                            incl.s.append(children[j].getReplacement());
+                            incl.matchAtFrom(i, j + 1);
+                        } // if
                         excl = new PartMatcher(this);
                         
-                        incl.matchAtFrom(i, j + 1);
                         inclGroups = owner.groups;
                         owner.groups = tempGroups;
                         excl.matchAtFrom(i, j + 1);
                         
-                        if (incl.res <= excl.res) {
+                        if (incl.res < 1 && incl.res <= excl.res) {
                             res = incl.res;
                             len = incl.len;
                             s.replace(0, s.length(), incl.s.toString());
@@ -86,23 +88,25 @@ final class Follow extends Elem {
                             s.replace(0, s.length(), excl.s.toString());
                         } // else
                         
-                        break;
+                        return res;
 
                     } else {
                         cur = children[j].matchAt(i + len);
                     } // else
 
                     res *= 1 - Math.min(cur, 1);
+                    if (res == 0) {
+                        res = 1;
+                        len = 0;
+                        return res;
+                    } // if
                     len += children[j].getMatchLen();
                     s.append(children[j].getReplacement());
                     j++;
                 } // while
                 
-                if (j >= children.length) {
-                    res = 1 - Math.pow(res, 1.0 / len);
-                } // if
+                return (res = 1 - Math.pow(res, 1.0 / len));
                 
-                return res;
             } // matchAtFrom
             
         } // class PartMatcher
