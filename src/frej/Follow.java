@@ -70,7 +70,10 @@ final class Follow extends Elem {
                             incl.len = len + children[j].getMatchLen();
                             incl.s.append(children[j].getReplacement());
                             incl.matchAtFrom(i, j + 1);
-                        } // if
+                        } else {
+                            incl.res = 1;
+                            incl.len = 0;
+                        } // else
                         excl = new PartMatcher(this);
                         
                         inclGroups = owner.groups;
