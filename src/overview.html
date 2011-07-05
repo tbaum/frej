@@ -91,7 +91,7 @@ US presidents and provides some substitution for further processing.
 <p>
 Pattern could contain more than one expression - in this case all except first
 are regarded as subexpressions. They should be marked with distinct names,
-prefixed by double-colon and could be referenced with <a href="subexpr">Subexpr</a> element:
+prefixed by double-colon and could be referenced with <a href="#subexpr">Subexpr</a> element:
 </p>
 
 <pre>
@@ -106,6 +106,10 @@ prefixed by double-colon and could be referenced with <a href="subexpr">Subexpr<
 ::street
 (^st,street,lane)
 </pre>
+
+<p>
+References to subexpression should always precede definition of this subexpression in the pattern.
+</p>
 
 <hr/>
 <h3>String processing</h3>
@@ -358,8 +362,9 @@ result is equal to <b>1.0</b>
 <h3 id="subexpr">Subexpr</h3>
 <p>
 This element is constructed by putting "<b>@</b>" immediately after opening bracket and then specifying
-exact name of subexpression defined in the pattern (not necessarily later or earlier). See
-<a href="#subexpressions">subexpressions</a> for an example of usage and of definition subexpressions themselves.
+exact name of subexpression defined in the pattern (definition should be plased later in the pattern,
+not earlier). See <a href="#subexpressions">subexpressions</a> for an example of usage and of
+definition subexpressions themselves.
 </p>
 <p>
 <b>Result</b> is just equal to result returned by subexpression.
