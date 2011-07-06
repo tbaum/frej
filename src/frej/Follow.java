@@ -21,9 +21,6 @@ along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 package frej;
 
 
-import java.util.*;
-
-
 final class Follow extends Elem {
     
     
@@ -60,9 +57,9 @@ final class Follow extends Elem {
                     
                     if (children[j].optional) {
                         PartMatcher incl, excl;
-                        Map<Character,String> inclGroups, tempGroups;
+                        Regex.GroupMap inclGroups, tempGroups;
 
-                        tempGroups = new HashMap<Character,String>(owner.groups);
+                        tempGroups = new Regex.GroupMap(owner.groups);
                         cur = children[j].matchAt(i + len);
                         incl = new PartMatcher(this);
                         if (cur < 1) {

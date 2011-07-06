@@ -21,9 +21,6 @@ along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 package frej;
 
 
-import java.util.*;
-
-
 final class Any extends Elem {
 
     
@@ -36,8 +33,8 @@ final class Any extends Elem {
     @Override
     double matchAt(int i) {
         double bestResult = Double.POSITIVE_INFINITY;
-        Map<Character,String> tempGroups = null;
-        Map<Character,String> oldGroups = new HashMap<Character,String>(owner.groups);
+        Regex.GroupMap tempGroups = null;
+        Regex.GroupMap oldGroups = new Regex.GroupMap(owner.groups);
         int bestNum = -1;
         
         matchStart = i;
@@ -45,7 +42,7 @@ final class Any extends Elem {
         
         for (int j = 0; j < children.length; j++) {
             double cur;
-            owner.groups = new HashMap<Character,String>(oldGroups);
+            owner.groups = new Regex.GroupMap(oldGroups);
             cur = children[j].matchAt(i); 
             if (cur < bestResult || cur == bestResult && children[j].getMatchLen() > matchLen) {
                 bestNum = j;

@@ -27,7 +27,7 @@ abstract class Elem {
     int matchStart, matchLen;
     Elem[] children;
     String replacement, matchReplacement;
-    char group;
+    String group;
     boolean optional;
     
     
@@ -90,7 +90,14 @@ abstract class Elem {
                         s.append(owner.suffix());
                         break;
                     default:
-                        s.append(owner.getGroup(c));
+                        if (replacement.charAt(i - 2) != '(') {
+                            s.append(owner.getGroup(replacement.substring(i, i + 1)));
+                        } else {
+                            String name = replacement.substring(i).replaceFirst("\\).*", "");
+                            s.deleteCharAt(s.length() - 1);
+                            s.append(owner.getGroup(name));
+                            i += name.length();
+                        } // else
                         break;
                     } // switch
                     continue;
@@ -126,7 +133,7 @@ abstract class Elem {
     
     void saveGroup() {
         
-        if (group == 0) {
+        if (group == null || group.isEmpty()) {
             return;
         } // if
         
@@ -134,14 +141,14 @@ abstract class Elem {
     } // saveGroup
     
     
-    void setGroup(char g) {
-        group = g;
+    void setGroup(String name) {
+        group = name;
     } // setGroup
     
     
     @Override
     public String toString() {
-        return (group != 0 ? "~" + group : "") + (replacement != null ? "|" + replacement : "");
+        return (group != "" && group != null ? "~" + group : "") + (replacement != null ? "|" + replacement : "");
     } // toString
     
     

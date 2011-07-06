@@ -389,8 +389,8 @@ definition subexpressions themselves.
 <h3 id="memory">Memory</h3>
 <p>
 This element is constructed by putting "<b>$</b>" immediately after opening bracket and then specifying
-the character which identifies some of marked <a href="#group">groups</a>.<br/>
-<pre>((^white|black,red|cyan,green|magenta,blue|yellow)~A,and,($A))</pre>
+the name which identifies some of marked <a href="#group">groups</a>.<br/>
+<pre>((^white|black,red|cyan,green|magenta,blue|yellow)~COLOR,and,($COLOR))</pre>
 Would match if pair of complementary colors specified, i.e. <em>white and black</em> or <em>blue yellow</em>.
 This element have sense mostly for complex substitutions.
 </p>
@@ -411,14 +411,15 @@ Any pattern element could be followed by <b>substitution string</b> or
 
 <h3 id="group">Grouping mark</h3>
 <p>
-Grouping is specified with "tilda" following capital latin letter (A..Z).
+Grouping is specified with "tilda" following name consisting of letters
+and digits.
 This makes engine remember the replacement result of the element (which now
 could be regarded as "group") in table of groups, so it could be later used
 in other matches or replacements.
 </p>
 <p>
 Example of grouping marks usage (with no special purpose):
-<pre>[ (^Anna, Bill, Dave)~N, (^Johnson, Smith)~L ]</pre>
+<pre>[ (^Anna, Bill, Dave)~NAME, (^Johnson, Smith)~LAST ]</pre>
 </p>
 
 <h3>Substitution string</h3>
@@ -442,12 +443,14 @@ Now <em>anne Jackson</em> and <em>Ann Johnson</em> would have replacement
 </p>
 <p>
 Replacement string could include references to previously matched groups,
-specifying this with dollar sign <b>$</b> followed by letter (A..Z). In
-this case result of replacement of specified group would be inserted into
+specifying this with dollar sign <b>$</b> followed by group name which
+is enclosed in brackets preceding dollar sign. Brackets could be omitted if
+name consist of only one character.
+In this case result of replacement of specified group would be inserted into
 replacement string:
-<pre>[(^Anna, Elisa, Jessica|Jess)~A,(^Dowson,Jackson)] | Is_not_$A_beautiful?</pre>
-<em>Ann Douson</em> => <em>Is not Anna beautiful?</em><br/>
-<em>Jessica Iakson</em> => <em>Is not Jess beautiful?</em><br/>
+<pre>[(^Anna, Elisa, Jessica|Jess)~A,(^Dowson,Jackson)~SURNAME] | Is_not_$A_($SURNAME)_beautiful?</pre>
+<em>Ann Douson</em> => <em>Is not Anna Dowson beautiful?</em><br/>
+<em>Jessica Iakson</em> => <em>Is not Jess Jackson beautiful?</em><br/>
 <em>William Wilson</em> => <i>(nothing)</i>
 </p>
 <p>There are three other useful referencing marks:

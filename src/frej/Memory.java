@@ -24,20 +24,20 @@ package frej;
 final class Memory extends Elem {
 
     
-    private char groupLetter;
+    private String groupName;
     private Token token;
     
-    Memory(Regex owner, String groupName) {
+    Memory(Regex owner, String name) {
         super(owner);
         token = new Token(owner, null);
-        groupLetter = groupName.charAt(0);
+        groupName = name;
     } // Memory
     
     
     @Override
     double matchAt(int i) {
         double retVal;
-        token.changePattern(owner.getGroup(groupLetter));
+        token.changePattern(owner.getGroup(groupName));
         retVal = token.matchAt(i);
         matchLen = token.getMatchLen();
         return retVal;
@@ -56,13 +56,13 @@ final class Memory extends Elem {
 
     @Override
     public String toString() {
-        return "($" + groupLetter + ")" + super.toString();
+        return "($" + groupName + ")" + super.toString();
     } // toString
     
     
     @Override
-    void setGroup(char g) {
-        token.setGroup(g);
+    void setGroup(String name) {
+        token.setGroup(name);
     } // setGroup
     
     

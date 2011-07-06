@@ -70,10 +70,24 @@ public final class Regex {
     private double matchResult;
     private String original;
     private int firstMatched, lastMatched;
-    Map<Character,String> groups = new HashMap<Character,String>();
+    GroupMap groups = new GroupMap();
     private String allowedPunct = "/-";
     private double threshold = Fuzzy.threshold;
-    private Map<String,Elem> subs = new HashMap<String,Elem>();
+    private Map<String, Elem> subs = new HashMap<String, Elem>();
+    
+    
+    @SuppressWarnings("serial")
+    static class GroupMap extends HashMap<String, String> {
+        
+        public GroupMap() {
+            super();
+        } // GroupMap
+        
+        public GroupMap(Regex.GroupMap map) {
+            super(map);
+        } // GroupMap
+        
+    } // GroupMap
     
     
     /**
@@ -203,16 +217,28 @@ public final class Regex {
     
     private Elem parse(String pattern) {
         Elem retVal;
-        String[] parts;
-        char g = 0;
+        String repl = null;
+        String g;
         
-        parts = pattern.split("\\|(?!.*[^\\\\]\\))", 2); // split by "pipe" symbol not enclosed in brackets
+        replSearch:
+        for (int i = pattern.length() - 1, brackets = 0; i >= 0; i--) {
+            char c = pattern.charAt(i);
+            switch (c) {
+            case ')': brackets++; break;
+            case '(': brackets--; break;
+            case '|':
+                if (brackets == 0) {
+                    repl = pattern.substring(i + 1);
+                    pattern = pattern.substring(0, i);
+                    break replSearch;
+                } // if
+                break;
+            } // switch
+        } // for
         
-        pattern = parts[0];
-        
-        if (pattern.length() > 1 && pattern.charAt(pattern.length() - 2) == '~') {
-            g = pattern.charAt(pattern.length() - 1);
-            pattern = pattern.substring(0, pattern.length() - 2);
+        g = extractGroupName(pattern);
+        if (g.length() > 0) {
+            pattern = pattern.substring(0, pattern.length() - g.length() - 1);
         } // if
         
         if (pattern.charAt(0) == '(') {
@@ -273,14 +299,30 @@ public final class Regex {
             retVal = new Token(this, eliminateEscapes(pattern)); 
         } // else
         
-        if (parts.length > 1) {
-            retVal.setReplacement(eliminateEscapes(parts[1]));
+        if (repl != null) {
+            retVal.setReplacement(eliminateEscapes(repl));
         } // if
         
         retVal.setGroup(g);
         
         return retVal;
     } // parse
+    
+    
+    private String extractGroupName(String pattern) {
+        
+        for (int i = pattern.length() - 1; i >= 0; i--) {
+            char c = pattern.charAt(i);
+            if (c == '~') {
+                return pattern.substring(i + 1);
+            } // if
+            if (!Character.isLetterOrDigit(c)) {
+                return "";
+            } // if
+        } // for
+        
+        return "";
+    } // pattern
     
     
     private Elem[] parseList(String pattern) {
@@ -318,7 +360,7 @@ public final class Regex {
         double bestResult = Double.POSITIVE_INFINITY;
         int bestPos = -1;
         int bestLen = -1;
-        Map<Character,String> tempGroups = null;
+        GroupMap tempGroups = null;
         
         groups.clear();
         splitTokens(seq);
@@ -330,7 +372,7 @@ public final class Regex {
                 bestPos = i;
                 bestLen = root.getMatchLen();
                 tempGroups = groups;
-                groups = new HashMap<Character,String>();
+                groups = new GroupMap();
             } // if
         } // for
         
@@ -537,8 +579,8 @@ public final class Regex {
     } // splitTokens
 
 
-    String getGroup(char g) {
-        String s = groups.get(Character.valueOf(g));
+    String getGroup(String name) {
+        String s = groups.get(name);
         if (s == null) {
             return "";
         } // if
@@ -546,8 +588,8 @@ public final class Regex {
     } // getGroup
 
 
-    void setGroup(char g, String s) {
-        groups.put(Character.valueOf(g), s);
+    void setGroup(String name, String s) {
+        groups.put(name, s);
     } // setGroup
 
 
