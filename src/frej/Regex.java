@@ -73,7 +73,7 @@ public final class Regex {
     GroupMap groups = new GroupMap();
     private String allowedPunct = "/-";
     private double threshold = Fuzzy.threshold;
-    private Map<String, Elem> subs = new HashMap<String, Elem>();
+    Map<String, Elem> subs = new HashMap<String, Elem>();
     
     
     @SuppressWarnings("serial")
@@ -280,7 +280,7 @@ public final class Regex {
                 if (!subs.containsKey(expr)) {
                     throw new RuntimeException("Undefined sub '" + expr + "'!");
                 } // if
-                retVal = subs.get(expr);
+                retVal = new Subexpr(this, expr);
                 break;
                 
             case '$':
