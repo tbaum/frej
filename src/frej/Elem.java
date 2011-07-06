@@ -90,7 +90,7 @@ abstract class Elem {
                         s.append(owner.suffix());
                         break;
                     default:
-                        if (replacement.charAt(i - 2) != '(') {
+                        if (i < 2 || replacement.charAt(i - 2) != '(') {
                             s.append(owner.getGroup(replacement.substring(i, i + 1)));
                         } else {
                             String name = replacement.substring(i).replaceFirst("\\).*", "");
