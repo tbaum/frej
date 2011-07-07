@@ -26,20 +26,6 @@ import java.util.*;
 import frej.fuzzy.*;
 
 
-/*
- * Pattern rules:
- * 
- * before matching string is cleared of any punctuation characters and split to tokens, each consisting of
- * sequence of characters of similar class  
- * 
- * "literal" - should approximately match one token...  
- * (^regex1,regex2,...,regexN) - should match any of subexpressions
- * (=regexA,regexB) - should match two consecutive expressions in any order
- * (>regex1,regex2,...,regexN) - should match all subexpressions in specified order
- * (*regex) - may match subexpression (return true in any case)
- * (#MIN:MAX) - should match token with number in specified range (also (#MAX) or simply (#)) 
- */
-
 /**
  * Class represents fuzzy regular expression at whole.
  * 
@@ -59,16 +45,16 @@ import frej.fuzzy.*;
 public final class Regex {
     
     
-    private static final int CHAR_CLASS_OTHER = 0;
-    private static final int CHAR_CLASS_DIGIT = 1;
-    private static final int CHAR_CLASS_LETTER = 2;
-    private static final int CHAR_CLASS_PUNCT = 3;
+    private enum CharType {
+        SEPARATOR, DIGIT, LETTER, ALLOWED_PUNCT
+    } // CharType
     
     private Elem root;
+    private Special terminator = new Special(this, null);
     String[] tokens;
     private int[] tokenPos;
     private double matchResult;
-    private String original;
+    private String original, replaceResult;
     private int firstMatched, lastMatched;
     GroupMap groups = new GroupMap();
     private String allowedPunct = "/-";
@@ -286,6 +272,10 @@ public final class Regex {
             case '$':
                 retVal = new Memory(this, expr);
                 break;
+            
+            case '.':
+                retVal = new Special(this, expr);
+                break;
                 
             default:
                 retVal = new Follow(this, parseList(pattern.toString().substring(p, pattern.length() - 1)));
@@ -373,6 +363,7 @@ public final class Regex {
                 bestLen = root.getMatchLen();
                 tempGroups = groups;
                 groups = new GroupMap();
+                replaceResult = root.getReplacement();
             } // if
         } // for
         
@@ -402,6 +393,7 @@ public final class Regex {
         } // if
         firstMatched = 0;
         lastMatched = tokens.length - 1;
+        replaceResult = root.getReplacement();
         return true;
     } // match
     
@@ -419,6 +411,7 @@ public final class Regex {
         } // if
         firstMatched = 0;
         lastMatched = root.getMatchLen() - 1;
+        replaceResult = root.getReplacement();
         return true;
     } // match
     
@@ -443,7 +436,7 @@ public final class Regex {
      * @return replacement as a string.
      */
     public String getReplacement() {
-        return root.getReplacement();
+        return replaceResult;
     } // getReplacement
     
     
@@ -538,11 +531,11 @@ public final class Regex {
         List<String> tokenList = new LinkedList<String>();
         List<Integer> posList = new LinkedList<Integer>();
         StringBuilder s = new StringBuilder();
-        int prevCharClass, charClass;
+        CharType prevCharClass, charClass;
         
         original = expr;
         
-        prevCharClass = CHAR_CLASS_OTHER;
+        prevCharClass = CharType.SEPARATOR;
         for (int i = 0; i <= expr.length(); i++) {
             char c;
             
@@ -550,14 +543,14 @@ public final class Regex {
                 c = expr.charAt(i);
             } catch (IndexOutOfBoundsException e) {
                 c = 0;
-                charClass = CHAR_CLASS_OTHER;
+                charClass = CharType.SEPARATOR;
             } // catch
 
-            charClass = Character.isLetter(c) ? CHAR_CLASS_LETTER :
-                    Character.isDigit(c) ? CHAR_CLASS_DIGIT : 
-                    allowedPunct.indexOf(c) >= 0 ? CHAR_CLASS_PUNCT : CHAR_CLASS_OTHER;
+            charClass = Character.isLetter(c) ? CharType.LETTER :
+                    Character.isDigit(c) ? CharType.DIGIT : 
+                    allowedPunct.indexOf(c) >= 0 ? CharType.ALLOWED_PUNCT : CharType.SEPARATOR;
 
-            if ((prevCharClass != charClass || charClass == CHAR_CLASS_PUNCT) && s.length() > 0) {
+            if ((prevCharClass != charClass || charClass == CharType.ALLOWED_PUNCT) && s.length() > 0) {
                 tokenList.add(s.toString());
                 posList.add(i - s.length());
                 s.setLength(0);
@@ -565,7 +558,7 @@ public final class Regex {
 
             prevCharClass = charClass;
             
-            if (charClass != CHAR_CLASS_OTHER) {
+            if (charClass != CharType.SEPARATOR) {
                 s.append(c);
             } // if
             
