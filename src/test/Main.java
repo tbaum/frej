@@ -43,6 +43,8 @@ public class Main {
     
 
     private static boolean debug = System.getProperties().getProperty("DEBUG") != null;    
+    private static List<String> argList;
+    private static String charsetName;
     
 
     private Main() {}
@@ -53,6 +55,7 @@ public class Main {
         Scanner in = new Scanner(System.in);
         Regex regex;
         int matchMode = 0;
+        String temp;
         
         if (args.length < 1) {
             System.err.println("Pattern should be specified. Example:");
@@ -69,32 +72,49 @@ public class Main {
             return;
         } // if
         
-        if (fetchParameter(args, "mode") != null) {
-            String mode = fetchParameter(args, "mode");
-            if (mode.equals("exact")) {
+        argList = new LinkedList<String>(Arrays.asList(args));
+        
+        if ((temp = fetchParameter("mode")) != null) {
+            if (temp.equals("exact")) {
                 matchMode = 0;
-            } else if (mode.equals("start")) {
+            } else if (temp.equals("start")) {
                 matchMode = 1;
-            } else if (mode.equals("substr")) {
+            } else if (temp.equals("substr")) {
                 matchMode = 2;
             } else {
-                System.err.println("Error in mode (" + mode +")");
+                System.err.println("Error in mode (" + temp +")");
                 return;
             } // else
         } // if
         
-        if (fetchParameter(args, "pattern") != null) {
-            String pattern = loadPattern(fetchParameter(args, "pattern"), fetchParameter(args, "charset"));
+        charsetName = fetchParameter("charset");
+        if (charsetName == null) {
+            charsetName = Charset.defaultCharset().name();
+        } // if
+
+        if ((temp = fetchParameter("pattern")) != null) {
+            String pattern = loadPattern(temp);
             if (pattern == null) {
                 System.err.println("Problem with loading pattern from file");
                 System.exit(1);
             } // if
             regex = new Regex(pattern);
-        } else if (fetchParameter(args, "autotest") != null) {
-            processAutoTest(fetchParameter(args, "autotest"));
+        } else if ((temp = fetchParameter("autotest")) != null) {
+            try {
+                processAutoTest(temp);
+            } catch (Exception e) {
+                System.out.println("Exception while autotesting");
+                e.printStackTrace();
+            } // catch
+            return;
+        } else if (argList.size() < 1) {
+            System.err.println("Pattern missing from the command-line");
+            return;
+        } else if (argList.size() > 1) {
+            System.err.println("Extra arguments in the command-line");
             return;
         } else {
-            regex = new Regex(args[0]);
+            regex = new Regex(argList.get(0));
         } // else
         
         try {
@@ -134,12 +154,13 @@ public class Main {
     } // main
     
     
-    private static String fetchParameter(String[] cmdLineArgs, String name) {
+    private static String fetchParameter(String name) {
         
         name = "--" + name + "=";
         
-        for (String s : cmdLineArgs) {
+        for (String s : argList) {
             if (s.startsWith(name)) {
+                argList.remove(s);
                 return s.substring(name.length());
             } // if
         } // for
@@ -148,16 +169,12 @@ public class Main {
     } // fetchParameter
     
     
-    private static String loadPattern(String fileName, String charsetName) {
+    private static String loadPattern(String fileName) {
         BufferedReader in;
         StringBuilder b;
         
         if (fileName == null) {
             return null;
-        } // if
-        
-        if (charsetName == null) {
-            charsetName = Charset.defaultCharset().name();
         } // if
         
         try {
@@ -192,9 +209,65 @@ public class Main {
     } // loadPattern
 
 
-    private static void processAutoTest(String fileName) {
-        System.err.println("Autotest initiated correctly, but it is not yet implemented!");
+    private static void processAutoTest(String fileName) throws FileNotFoundException, IOException {
+        BufferedReader in;
+
+        in = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), Charset.forName(charsetName)));
+
+        for (int i = 0, n = Integer.parseInt(in.readLine().replaceAll("\\s.*", "")); i < n; i++) {
+            String e = testOnePattern(in);
+            if (!e.isEmpty()) {
+                System.out.println(i + ":" + e);
+            } // if
+        } // for
+
     } // processAutoTest
+
+    
+    private static String testOnePattern(BufferedReader in) throws IOException {
+        String pattern = "";
+        String errors = "";
+        Regex r;
+
+        for (int n = Integer.parseInt(in.readLine().replaceAll("\\s.*", "")); n > 0; n--) {
+            pattern += in.readLine() + "\r";
+        } // for
+
+        r = new Regex(pattern);
+
+        for (int i = 0, n = Integer.parseInt(in.readLine().replaceAll("\\s.*", "")); i < n; i++) {
+            String answer;
+            String mode, test;
+            boolean b = false;
+            
+            test = in.readLine();
+            mode = test.replaceFirst("\\s.*", "");
+            test = test.replaceFirst("\\S+\\s+", "");
+            if (mode.equals("substr")) {
+                b = r.presentInSequence(test) >= 0;
+            } else if (mode.equals("start")) {
+                b = r.matchFromStart(test);
+            } else if (mode.equals("exact")) {
+                b = r.match(test);
+            } else if (mode.equals("fail")) {
+                b = !r.match(test);
+                if (!b) {
+                    errors += " " + i;
+                } // if
+                continue;
+            } else {
+                System.err.println("unknown test directive (" + mode +")!");
+            } // else
+
+            answer = in.readLine();
+
+            if (!b || !answer.equals(r.getReplacement())) {
+                errors += " " + i;
+            } // if
+        } // for
+
+        return errors;
+    } // testOnePattern
     
 
 } // class Main
