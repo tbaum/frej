@@ -361,9 +361,11 @@ public final class Regex {
                 bestResult = cur;
                 bestPos = i;
                 bestLen = root.getMatchLen();
+                firstMatched = bestPos;
+                lastMatched = bestPos + bestLen - 1; 
+                replaceResult = root.getReplacement();
                 tempGroups = groups;
                 groups = new GroupMap();
-                replaceResult = root.getReplacement();
             } // if
         } // for
         
@@ -373,8 +375,6 @@ public final class Regex {
         
         groups = tempGroups;
         matchResult = bestResult;
-        firstMatched = bestPos;
-        lastMatched = bestPos + bestLen - 1; 
         
         return bestPos;
     } // presentInSequence
@@ -446,6 +446,13 @@ public final class Regex {
      * @return position, as integer from range 0 .. seq.length() - 1
      */
     public int getMatchStart() {
+        
+        if (firstMatched < 0) {
+            return 0;
+        } else if (firstMatched >= tokens.length) {
+            return original.length();
+        } // else if
+        
         return tokenPos[firstMatched];
     } // getMatchStart
     
@@ -457,6 +464,13 @@ public final class Regex {
      */
     public int getMatchEnd() {
         // returns position immediately following 
+        
+        if (lastMatched < 0) {
+            return 0;
+        } else if (lastMatched >= tokens.length) {
+            return original.length();
+        } // else if
+        
         return tokenPos[lastMatched] + tokens[lastMatched].length();
     } // getMatchEnd
     
