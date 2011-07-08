@@ -38,30 +38,34 @@ final class Subexpr extends Elem {
         double retVal;
         retVal = elem.matchAt(i);
         matchLen = elem.getMatchLen();
+        saveGroup();
         return retVal;
     } // matchAt
     
     
     @Override
     String getReplacement() {
-        return elem.getReplacement();
+        
+        if (replacement == null) {
+            
+            return elem.getReplacement();
+            
+        } // if
+        
+        return super.getReplacement();
     } // getReplacement
+    
     
     @Override
     String getMatchReplacement() {
-        return elem.getMatchReplacement();
+        return elem.getReplacement();
     } // getMatchReplacement
+
 
     @Override
     public String toString() {
         return "(@" + subName + ")" + super.toString();
     } // toString
-    
-    
-    @Override
-    void setGroup(String name) {
-        elem.setGroup(name);
-    } // setGroup
     
     
 } // Supexpr
