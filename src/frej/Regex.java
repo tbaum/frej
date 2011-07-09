@@ -94,7 +94,22 @@ public final class Regex {
             subs.put(ssubs[i].substring(0, p), parse(ssubs[i].substring(p).replaceAll("\\s+", "")));
         } // for
         root = subs.get("");
-    } // FuzzyRegex
+    } // Regex
+    
+    
+    /**
+     * Creates new regular expression from presented pattern, specifying
+     * also settings of threshold value and allowed punctuation marks.
+     */
+    public Regex(String pattern, double threshold, String punctuators) {
+        this(pattern);
+        if (threshold >= 0) {
+            setThreshold(threshold);
+        } // if
+        if (punctuators != null) {
+            setAllowedPunctuationMarks(punctuators);
+        } // if
+    } // punctuators
     
     
     private String fixPattern(String pattern) {

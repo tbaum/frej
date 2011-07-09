@@ -45,6 +45,8 @@ public class Main {
     private static boolean debug = System.getProperties().getProperty("DEBUG") != null;    
     private static List<String> argList;
     private static String charsetName;
+    private static String punctuators;
+    private static double threshold;
     
 
     private Main() {}
@@ -57,22 +59,12 @@ public class Main {
         int matchMode = 0;
         String temp;
         
-        if (args.length < 1) {
-            System.err.println("Pattern should be specified. Example:");
-            System.err.println("    java -jar frej.jar \"(give,(#)~A,(^doll*,buck*,usd))|got_$A_dollars\"");
-            System.err.println("        give 5 dollars");
-            System.err.println("        giv 70 bucks");
-            System.err.println("        gave 1000 usd");
-            System.err.println();
-            System.err.println("Pattern also could be specified in text file:");
-            System.err.println("    java -jar frej.jar --pattern=<filename> [--charset=<charset-name>]");
-            System.err.println();
-            System.err.println("Matching mode could be selected (default='exact'):");
-            System.err.println("    java -jar frej.jar --mode=(exact|start|substr)");
+        argList = new LinkedList<String>(Arrays.asList(args));
+        
+        if (argList.size() < 1 || fetchParameter("help") != null) {
+            printHelp();
             return;
         } // if
-        
-        argList = new LinkedList<String>(Arrays.asList(args));
         
         if ((temp = fetchParameter("mode")) != null) {
             if (temp.equals("exact")) {
@@ -91,6 +83,17 @@ public class Main {
         if (charsetName == null) {
             charsetName = Charset.defaultCharset().name();
         } // if
+        
+        if ((temp = fetchParameter("threshold")) != null) {
+            threshold = Double.parseDouble(temp);
+        } else {
+            threshold = -1; //use default value
+        } // else
+        
+        punctuators = fetchParameter("punctuators");
+        if (punctuators == null) {
+            punctuators = "/-";
+        } // if
 
         if ((temp = fetchParameter("pattern")) != null) {
             String pattern = loadPattern(temp);
@@ -98,7 +101,7 @@ public class Main {
                 System.err.println("Problem with loading pattern from file");
                 System.exit(1);
             } // if
-            regex = new Regex(pattern);
+            regex = new Regex(pattern, threshold, punctuators);
         } else if ((temp = fetchParameter("autotest")) != null) {
             try {
                 processAutoTest(temp);
@@ -114,7 +117,7 @@ public class Main {
             System.err.println("Extra arguments in the command-line");
             return;
         } else {
-            regex = new Regex(argList.get(0));
+            regex = new Regex(argList.get(0), threshold, punctuators);
         } // else
         
         try {
@@ -152,6 +155,28 @@ public class Main {
         } catch (Exception e) {}
 
     } // main
+    
+    
+    private static void printHelp() {
+        System.err.println("USAGE: java -jar frej.jar [--arg=value, ... ] [\"pattern\"]");
+        System.err.println("allowed arguments:");
+        System.err.println("  --pattern=<filename.ext>        - load pattern from file");
+        System.err.println("  --charset=<charset>             - charset to use for loading from file");
+        System.err.println("                                    (like UTF-8, IBM866, windows-1251)");
+        System.err.println("  --mode=<exact|start|substr>     - matching mode (whole string, from start");
+        System.err.println("                                    or anywhere in the string)");
+        System.err.println("  --threshold=<value>             - threshold (allowed quantity of mistakes");
+        System.err.println("                                    (0.0 .. 1.0), default is 0.34)");
+        System.err.println("  --punctuators=<marks>           - punctuation marks recognized as tokens");
+        System.err.println("                                    (default are slash and dash, i.e. /-)");
+        System.err.println();
+        System.err.println("Pattern specification example:");
+        System.err.println("    java -jar frej.jar \"(give,(#)~A,(^doll*,buck*,usd))|got_$A_dollars\"");
+        System.err.println("        give 5 dollars");
+        System.err.println("        giv 70 bucks");
+        System.err.println("        gave 1000 usd");
+        System.err.println();
+    } // printHelp
     
     
     private static String fetchParameter(String name) {
@@ -233,7 +258,7 @@ public class Main {
             pattern += in.readLine() + "\r";
         } // for
 
-        r = new Regex(pattern);
+        r = new Regex(pattern, threshold, punctuators);
 
         for (int i = 0, n = Integer.parseInt(in.readLine().replaceAll("\\s.*", "")); i < n; i++) {
             String answer;
