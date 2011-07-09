@@ -1,0 +1,15 @@
+version 1.1
+
+
+- group names could now contain any number of characters (letters and digits);
+- optional element now could share brackets with its child;
+- command-line arguments "threshold" and "punctuators" added;
+- updated command-line help and javadocs;
+- added second public constructor for Regex;
+- added "Special" element to match end of line (now unusable);
+- fix for bug with replacement string of "presentInSequence";
+- fix for bugs with replacement and grouping of Subexpr elements;
+- separation of subexpression body from its name fixed;
+- follow element would stop early if current result is too bad;
+- autotest functionality added;
+- end of input now is Ctrl-Z or Ctrl-D, not empty line.

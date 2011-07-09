@@ -2,7 +2,7 @@
 
     
     <property name="rootDir" value="."/>
-    <property name="version" value="v1_0b_rev53"/>
+    <property name="version" value="v1_1b_rev54"/>
     <property name="srcDir" value="${rootDir}/src"/>
     <property name="outDir" value="${rootDir}/bin"/>
     <property name="docDirName" value="doc"/>
