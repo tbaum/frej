@@ -176,6 +176,9 @@ public class Main {
         System.err.println("        giv 70 bucks");
         System.err.println("        gave 1000 usd");
         System.err.println();
+        System.err.println("Copyright 2011 Rodion Gorkovenko (Saint-Petersburg, Russia)");
+        System.err.println("  http://frej.sf.net");
+        System.err.println("  FREJ is distributed under terms of GNU Lesser General Public License");
     } // printHelp
     
     
