@@ -3,7 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-import frej.*;
+import net.java.frej.*;
 
 
 public class FrejDemo extends JApplet implements ActionListener {
