@@ -114,19 +114,19 @@ References to subexpression should always precede definition of this subexpressi
 <hr/>
 <h3>String processing</h3>
 <p>
-When {@link frej.Regex Regex} is instantiated and initialized by some pattern,
+When {@link net.java.frej.Regex Regex} is instantiated and initialized by some pattern,
 it is ready for using against text strings by using one of methods:
 <ul>
-<li>{@link frej.Regex#match match(String text)} - compares "text" with pattern,
+<li>{@link net.java.frej.Regex#match match(String text)} - compares "text" with pattern,
 supposing that pattern should fit "text" at whole;</li>
-<li>{@link frej.Regex#matchFromStart matchFromStart(String text)} - compares
+<li>{@link net.java.frej.Regex#matchFromStart matchFromStart(String text)} - compares
 "text" with pattern, supposing that "text" possibly have extra tokens at the
 end, i.e. is longer than pattern requires (unused tail could be fetched after
-matching via {@link frej.Regex#suffix suffix()} method;</li>
-<li>{@link frej.Regex#presentInSequence presentInSequence(String text)} -
+matching via {@link net.java.frej.Regex#suffix suffix()} method;</li>
+<li>{@link net.java.frej.Regex#presentInSequence presentInSequence(String text)} -
 searches in the "text" for a fragment, which is best match for pattern (unused
 beginning and ending of the text could be fetched after matching via
-{@link frej.Regex#prefix prefix()} and {@link frej.Regex#suffix suffix()} methods.
+{@link net.java.frej.Regex#prefix prefix()} and {@link net.java.frej.Regex#suffix suffix()} methods.
 </ul>
 </p>
 
@@ -141,7 +141,7 @@ this array. Tokens could be of following types:
 <li>punctuation mark;</li>
 </ul>
 Not all punctuation marks beget tokens - this could be set up by
-{@link frej.Regex#setAllowedPunctuationMarks Regex.setAllowedPunctuationMarks(String marks)}.
+{@link net.java.frej.Regex#setAllowedPunctuationMarks Regex.setAllowedPunctuationMarks(String marks)}.
 Each of allowed punctuation marks creates separate token even if marks follow
 each other. All other punctuation marks as well as spaces, linefeeds etc.
 are regarded as token separators.</p>
@@ -165,7 +165,7 @@ Result of comparing text with pattern is evaluated as <b>double</b> value, which
 difference between text and pattern. Value of <b>0.0</b> means exact match. Result of matching complex
 pattern against some text is evaluated by special rules explained below. All of matching methods
 decide that matching is successfull if result is greater than <b>threshold</b> (which is initially
-<b>0.34</b> and could be changed with help of {@link frej.Regex#setThreshold Regex.setThreshold(double)}.
+<b>0.34</b> and could be changed with help of {@link net.java.frej.Regex#setThreshold Regex.setThreshold(double)}.
 </p>
 
 <hr/>
@@ -229,7 +229,7 @@ in text, if it is written correctly. Special ability is that if token element ha
 the end, it means that element may match only beginning of the token, skipping unused characters at end.
 </p>
 <p>
-Token is matched in fuzzy way by calling {@link frej.fuzzy.Fuzzy#similarity Fuzzy.similarity(CharSequence text, CharSequence pattern)}.
+Token is matched in fuzzy way by calling {@link net.java.frej.fuzzy.Fuzzy#similarity Fuzzy.similarity(CharSequence text, CharSequence pattern)}.
 </p>
 <p>
 <b>Result</b> of matching some token against "Token" element is the result returned by fuzzy matching method
@@ -457,13 +457,13 @@ replacement string:
 <ul>
 <li><b>$$</b> inserts matched token (useful with <a href="token">Token</a> element because it
 gives not matched token but pattern itself as replacement by default)</li>
-<li><b>$&lt;</b> inserts {@link frej.Regex#prefix() prefix} - useful in
+<li><b>$&lt;</b> inserts {@link net.java.frej.Regex#prefix() prefix} - useful in
 top-level expression when matching with
-{@link frej.Regex#presentInSequence(String text) presentInSequence};</li>
-<li><b>$&gt;</b> inserts {@link frej.Regex#prefix() prefix} - useful in
+{@link net.java.frej.Regex#presentInSequence(String text) presentInSequence};</li>
+<li><b>$&gt;</b> inserts {@link net.java.frej.Regex#prefix() prefix} - useful in
 top-level expression when matching with
-{@link frej.Regex#presentInSequence(String text) presentInSequence} or
-{@link frej.Regex#matchFromStart(String text) matchFromStart};</li>
+{@link net.java.frej.Regex#presentInSequence(String text) presentInSequence} or
+{@link net.java.frej.Regex#matchFromStart(String text) matchFromStart};</li>
 </ul>
 </p>
 
