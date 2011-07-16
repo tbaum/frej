@@ -18,8 +18,42 @@ You should have received a copy of the GNU Lesser General Public License
 along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
- * Includes core functionality for fuzzy string matching or substring searching.
- * Could be used alone and it is widely used in frej regexp mechanism.
- */
-package frej.fuzzy;
+package net.java.frej;
+
+
+class Regular extends Elem {
+
+    
+    private String pattern;
+    
+    
+    Regular(Regex owner, String pattern) {
+        super(owner);
+        this.pattern = pattern;
+    } // Regular
+    
+    
+    @Override
+    double matchAt(int i) {
+        matchStart = i;
+        matchLen = 0;
+        
+        if (i >= owner.tokens.length || !owner.tokens[i].matches(pattern)) {
+            return Double.POSITIVE_INFINITY;
+        } // if
+        
+        matchLen = 1;
+        
+        saveGroup();
+        
+        return 0;
+    } // matchAt
+    
+    
+    @Override
+    public String toString() {
+        return "(!" + pattern + ")" + super.toString();
+    } // toString
+    
+    
+} // Regular

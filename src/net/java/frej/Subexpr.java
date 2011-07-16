@@ -18,42 +18,54 @@ You should have received a copy of the GNU Lesser General Public License
 along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package frej;
+package net.java.frej;
 
 
-class Regular extends Elem {
+final class Subexpr extends Elem {
 
     
-    private String pattern;
+    private String subName;
+    private Elem elem;
     
-    
-    Regular(Regex owner, String pattern) {
+    Subexpr(Regex owner, String name) {
         super(owner);
-        this.pattern = pattern;
-    } // Regular
+        elem = owner.subs.get(subName = name);
+    } // Subexpr
     
     
     @Override
     double matchAt(int i) {
-        matchStart = i;
-        matchLen = 0;
-        
-        if (i >= owner.tokens.length || !owner.tokens[i].matches(pattern)) {
-            return Double.POSITIVE_INFINITY;
-        } // if
-        
-        matchLen = 1;
-        
+        double retVal;
+        retVal = elem.matchAt(i);
+        matchLen = elem.getMatchLen();
         saveGroup();
-        
-        return 0;
+        return retVal;
     } // matchAt
     
     
     @Override
+    String getReplacement() {
+        
+        if (replacement == null) {
+            
+            return elem.getReplacement();
+            
+        } // if
+        
+        return super.getReplacement();
+    } // getReplacement
+    
+    
+    @Override
+    String getMatchReplacement() {
+        return elem.getReplacement();
+    } // getMatchReplacement
+
+
+    @Override
     public String toString() {
-        return "(!" + pattern + ")" + super.toString();
+        return "(@" + subName + ")" + super.toString();
     } // toString
     
     
-} // Regular
+} // Supexpr

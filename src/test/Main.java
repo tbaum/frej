@@ -26,7 +26,7 @@ import java.util.*;
 import java.io.*;
 import java.nio.charset.*;
 
-import frej.*;
+import net.java.frej.*;
 
 
 /**

@@ -18,9 +18,9 @@ You should have received a copy of the GNU Lesser General Public License
 along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package frej;
+package net.java.frej;
 
-import frej.fuzzy.Fuzzy;
+import net.java.frej.fuzzy.Fuzzy;
 
 
 final class Token extends Elem {

@@ -19,7 +19,7 @@ along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /**
- * Includes all functionality for fuzzy regular expressions,
- * based on fuzzy string matching/searching utilities from frej.fuzzy.
+ * Includes core functionality for fuzzy string matching or substring searching.
+ * Could be used alone and it is widely used in frej regexp mechanism.
  */
-package frej;
+package net.java.frej.fuzzy;

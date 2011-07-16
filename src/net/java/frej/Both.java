@@ -18,54 +18,45 @@ You should have received a copy of the GNU Lesser General Public License
 along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package frej;
+package net.java.frej;
 
 
-final class Subexpr extends Elem {
-
+final class Both extends Elem {
     
-    private String subName;
-    private Elem elem;
+    private Elem expr;
     
-    Subexpr(Regex owner, String name) {
+    Both(Regex owner, Elem... elems) {
         super(owner);
-        elem = owner.subs.get(subName = name);
-    } // Subexpr
+        
+        if (elems.length != 2) {
+            throw new RuntimeException("Incorrect subexpressions number for BOTH element");
+        } // if
+        
+        expr = new Any(owner, new Follow(owner, elems[0], elems[1]), new Follow(owner, elems[1], elems[0]));
+        
+        children = elems;
+    } // FuzzyRegexBoth
     
     
     @Override
     double matchAt(int i) {
-        double retVal;
-        retVal = elem.matchAt(i);
-        matchLen = elem.getMatchLen();
+        double res;
+        
+        matchStart = i;
+        res = expr.matchAt(i);
+        matchLen = expr.getMatchLen();
+        matchReplacement = expr.getReplacement();
+        
         saveGroup();
-        return retVal;
+        
+        return res;
     } // matchAt
-    
-    
-    @Override
-    String getReplacement() {
-        
-        if (replacement == null) {
-            
-            return elem.getReplacement();
-            
-        } // if
-        
-        return super.getReplacement();
-    } // getReplacement
-    
-    
-    @Override
-    String getMatchReplacement() {
-        return elem.getReplacement();
-    } // getMatchReplacement
 
 
     @Override
     public String toString() {
-        return "(@" + subName + ")" + super.toString();
+        return childrenString("(=", ")") + super.toString();
     } // toString
     
     
-} // Supexpr
+} // class FuzzyRegexBoth

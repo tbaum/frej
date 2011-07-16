@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package frej.fuzzy;
+package net.java.frej.fuzzy;
 
 
 import java.util.*;
