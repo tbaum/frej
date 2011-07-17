@@ -73,6 +73,16 @@ final class Token extends Elem {
     } //getReplacement
     
     
+    void saveGroup() {
+        
+        if (group == null || group.isEmpty()) {
+            return;
+        } // if
+        
+        owner.setGroup(group, getReplacement());
+    } // saveGroup
+    
+    
     @Override
     public String toString() {
         return token + super.toString();
