@@ -10,7 +10,9 @@ import net.java.frej.*;
 
 public class FrejDemo extends Applet implements ActionListener {
 
-    
+    private String defPattern = "{(^Start,Run)~A, (?Demo)|, Applet~B}|Test_$B_is_$A-ing";
+    private String defInput = "ran appelt";
+
     private Button btnExact, btnStart, btnSubstr;
     private TextArea txtRegex, txtInput, txtAnswer;
     private List<Pos> poses = new java.util.LinkedList<Pos>();
@@ -37,9 +39,9 @@ public class FrejDemo extends Applet implements ActionListener {
         }); // addComponentListener
         
         poses.add(new Pos(new Label("Pattern:"), 0.1, 0.05, 0.8, 0.1));
-        poses.add(new Pos(txtRegex = new TextArea(), 0.1, 0.15, 0.8, 0.2));
+        poses.add(new Pos(txtRegex = new TextArea(defPattern), 0.1, 0.15, 0.8, 0.2));
         poses.add(new Pos(new Label("Input text:"), 0.1, 0.35, 0.8, 0.1));
-        poses.add(new Pos(txtInput = new TextArea(), 0.1, 0.45, 0.8, 0.15));
+        poses.add(new Pos(txtInput = new TextArea(defInput), 0.1, 0.45, 0.8, 0.15));
         poses.add(new Pos(btnExact = new Button("Exact"), 0.1, 0.65, 0.2, 0.1));
         poses.add(new Pos(btnStart = new Button("Start"), 0.4, 0.65, 0.2, 0.1));
         poses.add(new Pos(btnSubstr = new Button("SubStr"), 0.7, 0.65, 0.2, 0.1));
@@ -92,6 +94,8 @@ public class FrejDemo extends Applet implements ActionListener {
             p.c.setLocation((int) (w * p.x), (int) (h * p.y));
             p.c.setSize((int) (w * p.w), (int) (h * p.h));
         } // for
+
+        btnExact.requestFocus();
 
     } // componentResized
 
