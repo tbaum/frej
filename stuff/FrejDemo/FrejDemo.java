@@ -1,6 +1,6 @@
+import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 import javax.swing.border.*;
 import java.util.List;
 
@@ -8,15 +8,12 @@ import java.util.List;
 import net.java.frej.*;
 
 
-public class FrejDemo extends JApplet implements ActionListener {
+public class FrejDemo extends Applet implements ActionListener {
 
     
-    private JButton btnExact, btnStart, btnSubstr;
-    private JTextArea txtRegex;
-    private JTextArea txtInput;
-    private JLabel labelAnswer;
+    private Button btnExact, btnStart, btnSubstr;
+    private TextArea txtRegex, txtInput, txtAnswer;
     private List<Pos> poses = new java.util.LinkedList<Pos>();
-    private Border border = new LineBorder(Color.BLACK);
 
     private static class Pos {
         public Component c;
@@ -32,34 +29,30 @@ public class FrejDemo extends JApplet implements ActionListener {
     public FrejDemo() {
         super();
 
-        getContentPane().setLayout(null);
+        setLayout(null);
 
         addComponentListener(new ComponentAdapter(){
             @Override    
             public void componentResized(ComponentEvent e) { FrejDemo.this.componentResized(); }
         }); // addComponentListener
         
-        poses.add(new Pos(new JLabel("Pattern:"), 0.1, 0.05, 0.8, 0.1));
-        poses.add(new Pos(txtRegex = new JTextArea(), 0.1, 0.15, 0.8, 0.2));
-        poses.add(new Pos(new JLabel("Input text:"), 0.1, 0.35, 0.8, 0.1));
-        poses.add(new Pos(txtInput = new JTextArea(), 0.1, 0.45, 0.8, 0.15));
-        poses.add(new Pos(btnExact = new JButton("Exact"), 0.1, 0.65, 0.2, 0.1));
-        poses.add(new Pos(btnStart = new JButton("Start"), 0.4, 0.65, 0.2, 0.1));
-        poses.add(new Pos(btnSubstr = new JButton("SubStr"), 0.7, 0.65, 0.2, 0.1));
-        poses.add(new Pos(new JLabel("Answer:"), 0.1, 0.75, 0.8, 0.1));
-        poses.add(new Pos(labelAnswer = new JLabel(), 0.1, 0.85, 0.8, 0.1));
+        poses.add(new Pos(new Label("Pattern:"), 0.1, 0.05, 0.8, 0.1));
+        poses.add(new Pos(txtRegex = new TextArea(), 0.1, 0.15, 0.8, 0.2));
+        poses.add(new Pos(new Label("Input text:"), 0.1, 0.35, 0.8, 0.1));
+        poses.add(new Pos(txtInput = new TextArea(), 0.1, 0.45, 0.8, 0.15));
+        poses.add(new Pos(btnExact = new Button("Exact"), 0.1, 0.65, 0.2, 0.1));
+        poses.add(new Pos(btnStart = new Button("Start"), 0.4, 0.65, 0.2, 0.1));
+        poses.add(new Pos(btnSubstr = new Button("SubStr"), 0.7, 0.65, 0.2, 0.1));
+        poses.add(new Pos(new Label("Answer:"), 0.1, 0.75, 0.8, 0.1));
+        poses.add(new Pos(txtAnswer = new TextArea(), 0.1, 0.85, 0.8, 0.1));
         
         for (Pos p : poses) {
-            getContentPane().add(p.c);
+            add(p.c);
         } // for
         
-        txtRegex.setBorder(border);
-        txtInput.setBorder(border);
-        labelAnswer.setBorder(border);
         btnExact.addActionListener(this);
         btnStart.addActionListener(this);
         btnSubstr.addActionListener(this);
-
 
     } // Applet
 
@@ -79,12 +72,12 @@ public class FrejDemo extends JApplet implements ActionListener {
             } // else
 
             if (b) {
-                labelAnswer.setText(r.getReplacement());
+                txtAnswer.setText(r.getReplacement());
             } else {
-                labelAnswer.setText("// Not matched!");
+                txtAnswer.setText("// Not matched!");
             } // else
         } catch (Exception e) {
-            labelAnswer.setText("// Exception!");
+            txtAnswer.setText("// Exception!");
             return;
         } // catch
 
