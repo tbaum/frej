@@ -39,11 +39,11 @@ final class Both extends Elem {
     
     
     @Override
-    Result[] matchAt(int i) {
+    ResultSet matchAt(int i) {
         double res;
         
         matchStart = i;
-        res = expr.matchAt(i)[0].res;
+        res = expr.matchAt(i).best().res;
         matchLen = expr.getMatchLen();
         matchReplacement = expr.getReplacement();
         

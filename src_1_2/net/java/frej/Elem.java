@@ -36,7 +36,7 @@ class Elem {
     } // FuzzyRegexElem
     
     
-    Result[] matchAt(int i) {
+    ResultSet matchAt(int i) {
         throw new UnsupportedOperationException("Not implemented");
     } // matchAt
     

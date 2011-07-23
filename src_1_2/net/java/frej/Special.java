@@ -30,7 +30,7 @@ public class Special extends Elem {
     
     
     @Override
-    Result[] matchAt(int i) {
+    ResultSet matchAt(int i) {
         matchLen = 0;
         matchStart = i;
         
@@ -38,7 +38,7 @@ public class Special extends Elem {
             return super.matchAt(i);
         } // if
         
-        return Result.emptyArray();
+        return ResultSet.empty;
     } // matchAt
 
 } // Special

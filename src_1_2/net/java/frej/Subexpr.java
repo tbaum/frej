@@ -34,9 +34,9 @@ final class Subexpr extends Elem {
     
     
     @Override
-    Result[] matchAt(int i) {
+    ResultSet matchAt(int i) {
         double retVal;
-        retVal = elem.matchAt(i)[0].res;
+        retVal = elem.matchAt(i).best().res;
         matchLen = elem.getMatchLen();
         saveGroup();
         return super.matchAt(i);

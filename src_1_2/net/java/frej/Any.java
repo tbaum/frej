@@ -31,7 +31,7 @@ final class Any extends Elem {
     
     
     @Override
-    Result[] matchAt(int i) {
+    ResultSet matchAt(int i) {
         double bestResult = Double.POSITIVE_INFINITY;
         Regex.GroupMap tempGroups = null;
         Regex.GroupMap oldGroups = new Regex.GroupMap(owner.groups);
@@ -43,7 +43,7 @@ final class Any extends Elem {
         for (int j = 0; j < children.length; j++) {
             double cur;
             owner.groups = new Regex.GroupMap(oldGroups);
-            cur = children[j].matchAt(i)[0].res; 
+            cur = children[j].matchAt(i).best().res; 
             if (cur < bestResult || cur == bestResult && children[j].getMatchLen() > matchLen) {
                 bestNum = j;
                 bestResult = cur;

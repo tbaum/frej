@@ -34,12 +34,12 @@ class Regular extends Elem {
     
     
     @Override
-    Result[] matchAt(int i) {
+    ResultSet matchAt(int i) {
         matchStart = i;
         matchLen = 0;
         
         if (i >= owner.tokens.length || !owner.tokens[i].matches(pattern)) {
-            return Result.emptyArray();
+            return ResultSet.empty;
         } // if
         
         matchLen = 1;

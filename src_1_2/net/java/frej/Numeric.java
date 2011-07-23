@@ -47,24 +47,24 @@ final class Numeric extends Elem {
     
     
     @Override
-    Result[] matchAt(int i) {
+    ResultSet matchAt(int i) {
         int val;
         
         matchStart = i;
         matchLen = 0;
 
         if (i >= owner.tokens.length) {
-            return Result.emptyArray();
+            return ResultSet.empty;
         } // if
         
         try {
             val = Integer.parseInt(owner.tokens[i]);
         } catch (NumberFormatException e) {
-            return Result.emptyArray();
+            return ResultSet.empty;
         } // catch
         
         if (val < min || val > max) {
-            return Result.emptyArray();
+            return ResultSet.empty;
         } // if
         
         matchLen = 1;

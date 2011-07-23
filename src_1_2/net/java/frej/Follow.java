@@ -31,7 +31,7 @@ final class Follow extends Elem {
     
     
     @Override
-    Result[] matchAt(int i) {
+    ResultSet matchAt(int i) {
         
         class PartMatcher {
             public int len;
@@ -60,7 +60,7 @@ final class Follow extends Elem {
                         Regex.GroupMap inclGroups, tempGroups;
 
                         tempGroups = new Regex.GroupMap(owner.groups);
-                        cur = children[j].matchAt(i + len)[0].res;
+                        cur = children[j].matchAt(i + len).best().res;
                         incl = new PartMatcher(this);
                         if (cur < 1) {
                             incl.res *= 1 - Math.min(cur, 1);
@@ -91,7 +91,7 @@ final class Follow extends Elem {
                         return res;
 
                     } else {
-                        cur = children[j].matchAt(i + len)[0].res;
+                        cur = children[j].matchAt(i + len).best().res;
                     } // else
 
                     res *= 1 - Math.min(cur, 1);

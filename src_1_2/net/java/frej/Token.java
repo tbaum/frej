@@ -37,13 +37,13 @@ final class Token extends Elem {
 
     
     @Override
-    Result[] matchAt(int i) {
+    ResultSet matchAt(int i) {
         
         matchStart = i;
         matchLen = 0;
 
         if (i >= owner.tokens.length) {
-            return Result.emptyArray();
+            return ResultSet.empty;
         } // if
         
         if (partial && owner.tokens[i].length() > token.length()) {
