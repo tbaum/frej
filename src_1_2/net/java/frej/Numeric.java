@@ -47,31 +47,31 @@ final class Numeric extends Elem {
     
     
     @Override
-    double matchAt(int i) {
+    Result[] matchAt(int i) {
         int val;
         
         matchStart = i;
         matchLen = 0;
 
         if (i >= owner.tokens.length) {
-            return Double.POSITIVE_INFINITY;
+            return Result.emptyArray();
         } // if
         
         try {
             val = Integer.parseInt(owner.tokens[i]);
         } catch (NumberFormatException e) {
-            return Double.POSITIVE_INFINITY;
+            return Result.emptyArray();
         } // catch
         
         if (val < min || val > max) {
-            return Double.POSITIVE_INFINITY;
+            return Result.emptyArray();
         } // if
         
         matchLen = 1;
 
         saveGroup();
         
-        return 0;
+        return super.matchAt(i);
     } // matchAt
     
     

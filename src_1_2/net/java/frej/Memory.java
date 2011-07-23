@@ -35,12 +35,12 @@ final class Memory extends Elem {
     
     
     @Override
-    double matchAt(int i) {
+    Result[] matchAt(int i) {
         double retVal;
         token.changePattern(owner.getGroup(groupName));
-        retVal = token.matchAt(i);
+        retVal = token.matchAt(i)[0].res;
         matchLen = token.getMatchLen();
-        return retVal;
+        return super.matchAt(i);
     } // matchAt
     
     

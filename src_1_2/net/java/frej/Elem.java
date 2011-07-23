@@ -21,7 +21,7 @@ along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 package net.java.frej;
 
 
-abstract class Elem {
+class Elem {
 
     Regex owner;
     int matchStart, matchLen;
@@ -36,7 +36,9 @@ abstract class Elem {
     } // FuzzyRegexElem
     
     
-    abstract double matchAt(int i);
+    Result[] matchAt(int i) {
+        throw new UnsupportedOperationException("Not implemented");
+    } // matchAt
     
     
     int getMatchLen() {

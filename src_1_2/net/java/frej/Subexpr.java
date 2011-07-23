@@ -34,12 +34,12 @@ final class Subexpr extends Elem {
     
     
     @Override
-    double matchAt(int i) {
+    Result[] matchAt(int i) {
         double retVal;
-        retVal = elem.matchAt(i);
+        retVal = elem.matchAt(i)[0].res;
         matchLen = elem.getMatchLen();
         saveGroup();
-        return retVal;
+        return super.matchAt(i);
     } // matchAt
     
     

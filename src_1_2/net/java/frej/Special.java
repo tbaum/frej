@@ -30,15 +30,15 @@ public class Special extends Elem {
     
     
     @Override
-    double matchAt(int i) {
+    Result[] matchAt(int i) {
         matchLen = 0;
         matchStart = i;
         
         if (i == 0 || i == owner.tokens.length) {
-            return 0;
+            return super.matchAt(i);
         } // if
         
-        return Double.POSITIVE_INFINITY;
+        return Result.emptyArray();
     } // matchAt
 
 } // Special

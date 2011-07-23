@@ -34,19 +34,19 @@ class Regular extends Elem {
     
     
     @Override
-    double matchAt(int i) {
+    Result[] matchAt(int i) {
         matchStart = i;
         matchLen = 0;
         
         if (i >= owner.tokens.length || !owner.tokens[i].matches(pattern)) {
-            return Double.POSITIVE_INFINITY;
+            return Result.emptyArray();
         } // if
         
         matchLen = 1;
         
         saveGroup();
         
-        return 0;
+        return super.matchAt(i);
     } // matchAt
     
     

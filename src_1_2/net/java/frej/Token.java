@@ -37,13 +37,13 @@ final class Token extends Elem {
 
     
     @Override
-    double matchAt(int i) {
+    Result[] matchAt(int i) {
         
         matchStart = i;
         matchLen = 0;
 
         if (i >= owner.tokens.length) {
-            return Double.POSITIVE_INFINITY;
+            return Result.emptyArray();
         } // if
         
         if (partial && owner.tokens[i].length() > token.length()) {
@@ -56,7 +56,7 @@ final class Token extends Elem {
 
         saveGroup();
         
-        return Fuzzy.result;
+        return super.matchAt(i);
     } // matchAt
     
     

@@ -371,7 +371,7 @@ public final class Regex {
         splitTokens(seq);
         
         for (int i = 0; i < tokens.length; i++) {
-            double cur = root.matchAt(i);
+            double cur = root.matchAt(i)[0].res;
             if (cur < bestResult) {
                 bestResult = cur;
                 bestPos = i;
@@ -402,7 +402,7 @@ public final class Regex {
     public boolean match(String seq) {
         groups.clear();
         splitTokens(seq);
-        matchResult = root.matchAt(0);
+        matchResult = root.matchAt(0)[0].res;
         if (matchResult > threshold || root.getMatchLen() != tokens.length) {
             return false;
         } // if
@@ -420,7 +420,7 @@ public final class Regex {
     public boolean matchFromStart(String seq) {
         groups.clear();
         splitTokens(seq);
-        matchResult = root.matchAt(0);
+        matchResult = root.matchAt(0)[0].res;
         if (matchResult > threshold) {
             return false;
         } // if
