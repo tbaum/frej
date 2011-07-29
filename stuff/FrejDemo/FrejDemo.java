@@ -38,7 +38,7 @@ public class FrejDemo extends Applet implements ActionListener {
             public void componentResized(ComponentEvent e) { FrejDemo.this.componentResized(); }
         }); // addComponentListener
         
-        poses.add(new Pos(new Label("Pattern:"), 0.1, 0.05, 0.8, 0.1));
+        poses.add(new Pos(new Label("Pattern:"), 0.1, 0.05, 0.2, 0.1));
         poses.add(new Pos(btnDemo = new Button("Demo"),0.7, 0.04, 0.2, 0.1 ));
         poses.add(new Pos(txtRegex = new TextArea(defPattern), 0.1, 0.15, 0.8, 0.2));
         poses.add(new Pos(new Label("Input text:"), 0.1, 0.35, 0.8, 0.1));
