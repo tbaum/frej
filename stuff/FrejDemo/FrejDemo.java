@@ -1,7 +1,7 @@
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.border.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -9,14 +9,19 @@ import net.java.frej.*;
 
 
 public class FrejDemo extends Applet implements ActionListener {
-
+ 
     private String defPattern = "{(^Start,Run)~A, (?Demo)|, Applet~B}|Test_$B_is_$A-ing";
     private String defInput = "ran appelt";
 
     private Button btnExact, btnStart, btnSubstr, btnDemo;
     private TextArea txtRegex, txtInput, txtAnswer;
     private List<Pos> poses = new java.util.LinkedList<Pos>();
-
+   
+    private String[] strTest = {"{=frej,(?test)}", "frej test", "fresh test", "test", "toast frej"};
+    private String[] strReg = {"[^(reg*,expr*),regexp]", "regular expression", "regolar suppression", "regexpr"};
+    private List<String[]> examples = new ArrayList<String[]>();
+    	
+    
     private static class Pos {
         public Component c;
         public float x, y, w, h;
@@ -32,7 +37,8 @@ public class FrejDemo extends Applet implements ActionListener {
         super();
 
         setLayout(null);
-
+        
+        
         addComponentListener(new ComponentAdapter(){
             @Override    
             public void componentResized(ComponentEvent e) { FrejDemo.this.componentResized(); }
@@ -52,15 +58,19 @@ public class FrejDemo extends Applet implements ActionListener {
         for (Pos p : poses) {
             add(p.c);
         } // for
-        
+
         btnExact.addActionListener(this);
         btnStart.addActionListener(this);
         btnSubstr.addActionListener(this);
-
+                
+        examples.add(strReg);
+        examples.add(strTest);
+        
     } // Applet
 
 
-    public void actionPerformed(ActionEvent evt) {
+    @Override
+	public void actionPerformed(ActionEvent evt) {
         
         try {
             boolean b;
