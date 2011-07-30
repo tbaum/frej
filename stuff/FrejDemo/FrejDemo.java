@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 import net.java.frej.*;
@@ -19,7 +20,7 @@ public class FrejDemo extends Applet implements ActionListener {
    
     private String[] strTest = {"{=frej,(?test)}", "frej test", "fresh test", "test", "toast frej"};
     private String[] strReg = {"[^(reg*,expr*),regexp]", "regular expression", "regolar suppression", "regexpr"};
-    private List<String[]> examples = new ArrayList<String[]>();
+    private List<String[]> lstrExampels = new ArrayList<String[]>();
     	
     
     private static class Pos {
@@ -62,9 +63,10 @@ public class FrejDemo extends Applet implements ActionListener {
         btnExact.addActionListener(this);
         btnStart.addActionListener(this);
         btnSubstr.addActionListener(this);
+        btnDemo.addActionListener(this);
                 
-        examples.add(strReg);
-        examples.add(strTest);
+        lstrExampels.add(strReg);
+        lstrExampels.add(strTest);
         
     } // Applet
 
@@ -76,13 +78,19 @@ public class FrejDemo extends Applet implements ActionListener {
             boolean b;
             Regex r = new Regex(txtRegex.getText());
 
-            if (evt.getSource() == btnExact) {
+            if(evt.getSource() == btnDemo){
+            	//random generation
+            	setTextareaRandomly(lstrExampels);
+            	b = true;
+            }
+            else if (evt.getSource() == btnExact) {
                 b = r.match(txtInput.getText());
             } else if (evt.getSource() == btnStart) {
                 b = r.matchFromStart(txtInput.getText());
             } else {
                 b = r.presentInSequence(txtInput.getText()) >= 0;
             } // else
+            
 
             if (b) {
                 txtAnswer.setText(r.getReplacement());
@@ -95,7 +103,30 @@ public class FrejDemo extends Applet implements ActionListener {
         } // catch
 
     } // actionPerformed
-
+    
+    
+    /**
+     *setTextareaRandomly-set First element of this array 
+	 *into upper textarea (pattern). One of other elements (chosen randomly
+	 *sets into middle textarea ("Input text").
+     * @param lstrRegex - List of 2 arrays that include regular expressions string
+     */
+    public void setTextareaRandomly(List<String[]> lstrRegex) {
+		Random rGenarotor = new Random();
+		int nRand = rGenarotor.nextInt(lstrRegex.size());
+		
+		/*choose random array String from the List*/
+		String[] strRegex = lstrRegex.get(nRand);
+		
+		/*Set the first textArea with a first String from the List*/
+		txtRegex.setText(strRegex[0]);
+		
+		/*Generate random number but not the first one as it already used*/
+		nRand = rGenarotor.nextInt(strRegex.length-1);
+		
+		/*Set the second textArea with a random String from the List*/
+		txtInput.setText(strRegex[nRand+1]);
+}
 
     public void componentResized() {
         int w = getWidth();
