@@ -1,9 +1,8 @@
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 
 import net.java.frej.*;
@@ -18,9 +17,10 @@ public class FrejDemo extends Applet implements ActionListener {
     private TextArea txtRegex, txtInput, txtAnswer;
     private List<Pos> poses = new java.util.LinkedList<Pos>();
    
-    private String[] strTest = {"{=frej,(?test)}", "frej test", "fresh test", "test", "toast frej"};
-    private String[] strReg = {"[^(reg*,expr*),regexp]", "regular expression", "regolar suppression", "regexpr"};
-    private List<String[]> lstrExampels = new ArrayList<String[]>();
+    private List<String[]> lstrExamples = Arrays.asList(new String[][] {
+        {"{=frej,(?test)}", "frej test", "fresh test", "test", "toast frej"},
+        {"[^(reg*,expr*),regexp]", "regular expression", "regolar suppression", "regexpr"},
+        {"[(^java,jre), (#5:7), compat*]", "jre 5 ocmpatible", "javac 7 compatibility", "java 4 compatible"}});
     	
     
     private static class Pos {
@@ -65,9 +65,6 @@ public class FrejDemo extends Applet implements ActionListener {
         btnSubstr.addActionListener(this);
         btnDemo.addActionListener(this);
                 
-        lstrExampels.add(strReg);
-        lstrExampels.add(strTest);
-        
     } // Applet
 
 
@@ -80,7 +77,7 @@ public class FrejDemo extends Applet implements ActionListener {
 
             if(evt.getSource() == btnDemo){
             	//random generation
-            	setTextareaRandomly(lstrExampels);
+            	setTextareaRandomly(lstrExamples);
             	b = true;
             }
             else if (evt.getSource() == btnExact) {
@@ -91,7 +88,6 @@ public class FrejDemo extends Applet implements ActionListener {
                 b = r.presentInSequence(txtInput.getText()) >= 0;
             } // else
             
-
             if (b) {
                 txtAnswer.setText(r.getReplacement());
             } else {
@@ -106,14 +102,14 @@ public class FrejDemo extends Applet implements ActionListener {
     
     
     /**
-     *setTextareaRandomly-set First element of this array 
-	 *into upper textarea (pattern). One of other elements (chosen randomly
-	 *sets into middle textarea ("Input text").
-     * @param lstrRegex - List of 2 arrays that include regular expressions string
+     * set First element of this array 
+	 * into upper textarea (pattern). One of other elements (chosen randomly
+	 * sets into middle textarea ("Input text").
+     * @param lstrRegex - List of arrays that include regular expressions string
      */
     public void setTextareaRandomly(List<String[]> lstrRegex) {
-		Random rGenarotor = new Random();
-		int nRand = rGenarotor.nextInt(lstrRegex.size());
+		Random rGenerator = new Random();
+		int nRand = rGenerator.nextInt(lstrRegex.size());
 		
 		/*choose random array String from the List*/
 		String[] strRegex = lstrRegex.get(nRand);
@@ -122,11 +118,12 @@ public class FrejDemo extends Applet implements ActionListener {
 		txtRegex.setText(strRegex[0]);
 		
 		/*Generate random number but not the first one as it already used*/
-		nRand = rGenarotor.nextInt(strRegex.length-1);
+		nRand = rGenerator.nextInt(strRegex.length - 1);
 		
 		/*Set the second textArea with a random String from the List*/
-		txtInput.setText(strRegex[nRand+1]);
-}
+		txtInput.setText(strRegex[nRand + 1]);
+    } // setTextareaRandomly
+
 
     public void componentResized() {
         int w = getWidth();
