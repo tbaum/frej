@@ -22,11 +22,14 @@ along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 package test;
 
 
-import java.util.*;
-import java.io.*;
-import java.nio.charset.*;
+import net.java.frej.Regex;
 
-import net.java.frej.*;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
 
 
 /**

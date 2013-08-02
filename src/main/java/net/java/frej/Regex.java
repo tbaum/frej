@@ -21,9 +21,9 @@ along with FREJ.  If not, see <http://www.gnu.org/licenses/>.
 package net.java.frej;
 
 
-import java.util.*;
-
 import net.java.frej.fuzzy.Fuzzy;
+
+import java.util.*;
 
 
 /**
